@@ -20,28 +20,28 @@
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css">
 
 <script class="next-config" data-name="main" type="application/json">{&quot;hostname&quot;:&quot;devenzhou.github.io&quot;,&quot;root&quot;:&quot;&#x2F;&quot;,&quot;images&quot;:&quot;&#x2F;images&quot;,&quot;scheme&quot;:&quot;Gemini&quot;,&quot;version&quot;:&quot;8.3.0&quot;,&quot;exturl&quot;:false,&quot;sidebar&quot;:{&quot;position&quot;:&quot;left&quot;,&quot;display&quot;:&quot;post&quot;,&quot;padding&quot;:18,&quot;offset&quot;:12},&quot;copycode&quot;:true,&quot;bookmark&quot;:{&quot;enable&quot;:false,&quot;color&quot;:&quot;#222&quot;,&quot;save&quot;:&quot;auto&quot;},&quot;fancybox&quot;:false,&quot;mediumzoom&quot;:false,&quot;lazyload&quot;:false,&quot;pangu&quot;:false,&quot;comments&quot;:{&quot;style&quot;:&quot;tabs&quot;,&quot;active&quot;:null,&quot;storage&quot;:true,&quot;lazyload&quot;:false,&quot;nav&quot;:null},&quot;motion&quot;:{&quot;enable&quot;:true,&quot;async&quot;:false,&quot;transition&quot;:{&quot;post_block&quot;:&quot;fadeIn&quot;,&quot;post_header&quot;:&quot;fadeInDown&quot;,&quot;post_body&quot;:&quot;fadeInDown&quot;,&quot;coll_header&quot;:&quot;fadeInLeft&quot;,&quot;sidebar&quot;:&quot;fadeInUp&quot;}},&quot;prism&quot;:false,&quot;i18n&quot;:{&quot;placeholder&quot;:&quot;搜索...&quot;,&quot;empty&quot;:&quot;没有找到任何搜索结果：${query}&quot;,&quot;hits_time&quot;:&quot;找到 ${hits} 个搜索结果（用时 ${time} 毫秒）&quot;,&quot;hits&quot;:&quot;找到 ${hits} 个搜索结果&quot;}}</script>
-<meta name="description" content="问题描述IDEA打开Preferences | Appearance &amp; Behavior | System Settings | HTTP Proxy会提示一下语句： 1234You have JVM proterty &quot;https.proxyHost&quot; set to &quot;127.0.0.1&quot;.This may lead to incorrect b">
+<meta name="description" content="在通过Dockerfile进行构建镜像时，经常会遇到容器内依赖无法下载的情况，这种原始是由于部分依赖在国内无法访问，必须通过代理进行转发。">
 <meta property="og:type" content="article">
-<meta property="og:title" content="IDEA提示JVM https.proxyHost代理为localhost">
-<meta property="og:url" content="https://devenzhou.github.io/2021/04/15/IDEA%E6%8F%90%E7%A4%BAJVM-https-proxyHost%E4%BB%A3%E7%90%86%E4%B8%BAlocalhost/index.html">
-<meta property="og:site_name" content="Deven&#39;s NoteBook">
-<meta property="og:description" content="问题描述IDEA打开Preferences | Appearance &amp; Behavior | System Settings | HTTP Proxy会提示一下语句： 1234You have JVM proterty &quot;https.proxyHost&quot; set to &quot;127.0.0.1&quot;.This may lead to incorrect b">
+<meta property="og:title" content="docker build配置代理">
+<meta property="og:url" content="https://devenzhou.github.io/article/869e1239.html">
+<meta property="og:site_name" content="听风雨">
+<meta property="og:description" content="在通过Dockerfile进行构建镜像时，经常会遇到容器内依赖无法下载的情况，这种原始是由于部分依赖在国内无法访问，必须通过代理进行转发。">
 <meta property="og:locale" content="zh_CN">
-<meta property="article:published_time" content="2021-04-15T13:32:00.000Z">
-<meta property="article:modified_time" content="2021-04-15T13:32:24.058Z">
-<meta property="article:author" content="Deven Zhou">
-<meta property="article:tag" content="IDEA">
+<meta property="article:published_time" content="2021-04-17T07:29:45.000Z">
+<meta property="article:modified_time" content="2021-04-17T07:33:01.995Z">
+<meta property="article:author" content="Deven">
+<meta property="article:tag" content="docker">
 <meta name="twitter:card" content="summary">
 
 
-<link rel="canonical" href="https://devenzhou.github.io/2021/04/15/IDEA%E6%8F%90%E7%A4%BAJVM-https-proxyHost%E4%BB%A3%E7%90%86%E4%B8%BAlocalhost/">
+<link rel="canonical" href="https://devenzhou.github.io/article/869e1239.html">
 
 
 
-<script class="next-config" data-name="page" type="application/json">{&quot;sidebar&quot;:&quot;&quot;,&quot;isHome&quot;:false,&quot;isPost&quot;:true,&quot;lang&quot;:&quot;zh-CN&quot;,&quot;comments&quot;:true,&quot;permalink&quot;:&quot;https:&#x2F;&#x2F;devenzhou.github.io&#x2F;2021&#x2F;04&#x2F;15&#x2F;IDEA%E6%8F%90%E7%A4%BAJVM-https-proxyHost%E4%BB%A3%E7%90%86%E4%B8%BAlocalhost&#x2F;&quot;,&quot;path&quot;:&quot;2021&#x2F;04&#x2F;15&#x2F;IDEA提示JVM-https-proxyHost代理为localhost&#x2F;&quot;,&quot;title&quot;:&quot;IDEA提示JVM https.proxyHost代理为localhost&quot;}</script>
+<script class="next-config" data-name="page" type="application/json">{&quot;sidebar&quot;:&quot;&quot;,&quot;isHome&quot;:false,&quot;isPost&quot;:true,&quot;lang&quot;:&quot;zh-CN&quot;,&quot;comments&quot;:true,&quot;permalink&quot;:&quot;https:&#x2F;&#x2F;devenzhou.github.io&#x2F;article&#x2F;869e1239.html&quot;,&quot;path&quot;:&quot;article&#x2F;869e1239.html&quot;,&quot;title&quot;:&quot;docker build配置代理&quot;}</script>
 
 <script class="next-config" data-name="calendar" type="application/json">&quot;&quot;</script>
-<title>IDEA提示JVM https.proxyHost代理为localhost | Deven's NoteBook</title><script src="/js/config.js"></script>
+<title>docker build配置代理 | 听风雨</title><script src="/js/config.js"></script>
   
 
 
@@ -70,7 +70,7 @@
 
     <a href="/" class="brand" rel="start">
       <i class="logo-line"></i>
-      <h1 class="site-title">Deven's NoteBook</h1>
+      <h1 class="site-title">听风雨</h1>
       <i class="logo-line"></i>
     </a>
   </div>
@@ -86,7 +86,6 @@
 <nav class="site-nav">
   <ul class="main-menu menu">
         <li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li>
-        <li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li>
         <li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li>
         <li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li>
         <li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
@@ -120,15 +119,15 @@
       <div class="sidebar-panel-container">
         <!--noindex-->
         <div class="post-toc-wrap sidebar-panel">
-            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%97%AE%E9%A2%98%E6%8F%8F%E8%BF%B0"><span class="nav-number">1.</span> <span class="nav-text">问题描述</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%A7%A3%E5%86%B3%E6%96%B9%E5%BC%8F"><span class="nav-number">2.</span> <span class="nav-text">解决方式</span></a></li></ol></div>
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%85%8D%E7%BD%AE"><span class="nav-number">1.</span> <span class="nav-text">配置</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8E%9F%E7%90%86"><span class="nav-number">2.</span> <span class="nav-text">原理</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%85%B6%E4%BB%96%E5%8F%82%E6%95%B0"><span class="nav-number">3.</span> <span class="nav-text">其他参数</span></a></li></ol></div>
         </div>
         <!--/noindex-->
 
         <div class="site-overview-wrap sidebar-panel">
           <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
-    <img class="site-author-image" itemprop="image" alt="Deven Zhou"
+    <img class="site-author-image" itemprop="image" alt="Deven"
       src="/images/avatar.jpeg">
-  <p class="site-author-name" itemprop="name">Deven Zhou</p>
+  <p class="site-author-name" itemprop="name">Deven</p>
   <div class="site-description" itemprop="description"></div>
 </div>
 <div class="site-state-wrap site-overview-item animated">
@@ -136,20 +135,20 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">3</span>
+          <span class="site-state-item-count">10</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
             <a href="/categories/">
           
-        <span class="site-state-item-count">3</span>
+        <span class="site-state-item-count">5</span>
         <span class="site-state-item-name">分类</span></a>
       </div>
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
           
-        <span class="site-state-item-count">2</span>
+        <span class="site-state-item-count">3</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>
@@ -193,20 +192,20 @@
   
 
   <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://devenzhou.github.io/2021/04/15/IDEA%E6%8F%90%E7%A4%BAJVM-https-proxyHost%E4%BB%A3%E7%90%86%E4%B8%BAlocalhost/">
+    <link itemprop="mainEntityOfPage" href="https://devenzhou.github.io/article/869e1239.html">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.jpeg">
-      <meta itemprop="name" content="Deven Zhou">
+      <meta itemprop="name" content="Deven">
       <meta itemprop="description" content="">
     </span>
 
     <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Deven's NoteBook">
+      <meta itemprop="name" content="听风雨">
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          IDEA提示JVM https.proxyHost代理为localhost
+          docker build配置代理
         </h1>
 
         <div class="post-meta-container">
@@ -218,7 +217,7 @@
       <span class="post-meta-item-text">发表于</span>
       
 
-      <time title="创建时间：2021-04-15 21:32:00 / 修改时间：21:32:24" itemprop="dateCreated datePublished" datetime="2021-04-15T21:32:00+08:00">2021-04-15</time>
+      <time title="创建时间：2021-04-17 15:29:45 / 修改时间：15:33:01" itemprop="dateCreated datePublished" datetime="2021-04-17T15:29:45+08:00">2021-04-17</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -226,11 +225,11 @@
       </span>
       <span class="post-meta-item-text">分类于</span>
         <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/%E5%B7%A5%E5%85%B7/" itemprop="url" rel="index"><span itemprop="name">工具</span></a>
+          <a href="/categories/%E4%BA%91%E5%8E%9F%E7%94%9F/" itemprop="url" rel="index"><span itemprop="name">云原生</span></a>
         </span>
           ，
         <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/%E5%B7%A5%E5%85%B7/IDEA/" itemprop="url" rel="index"><span itemprop="name">IDEA</span></a>
+          <a href="/categories/%E4%BA%91%E5%8E%9F%E7%94%9F/docker/" itemprop="url" rel="index"><span itemprop="name">docker</span></a>
         </span>
     </span>
 
@@ -244,14 +243,27 @@
     
     
     <div class="post-body" itemprop="articleBody">
-        <h2 id="问题描述"><a href="#问题描述" class="headerlink" title="问题描述"></a>问题描述</h2><p>IDEA打开<code>Preferences | Appearance &amp; Behavior | System Settings | HTTP Proxy</code>会提示一下语句：</p>
-<figure class="highlight applescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">You have JVM proterty <span class="string">&quot;https.proxyHost&quot;</span> <span class="keyword">set</span> <span class="keyword">to</span> <span class="string">&quot;127.0.0.1&quot;</span>.</span><br><span class="line">This may lead <span class="keyword">to</span> incorrect behaviour. Proxy should be <span class="keyword">set</span> <span class="keyword">in</span> Settings | HTTP Proxy</span><br><span class="line">This JVM <span class="keyword">property</span> <span class="keyword">is</span> old <span class="keyword">and</span> <span class="keyword">its</span> usage <span class="keyword">is</span> <span class="keyword">not</span> recommended <span class="keyword">by</span> Oracle.</span><br><span class="line">(Note: Iy could have been assigned <span class="keyword">by</span> <span class="keyword">some</span> code dynamically.)</span><br></pre></td></tr></table></figure>
-
-<p>出现该问题的原因一般是我们在本地启用了代理软件，代理软件自动修改了JVM代理。</p>
+        <p>在通过<code>Dockerfile</code>进行构建镜像时，经常会遇到容器内依赖无法下载的情况，这种原始是由于部分依赖在国内无法访问，必须通过代理进行转发。</p>
 <span id="more"></span>
-
-<h2 id="解决方式"><a href="#解决方式" class="headerlink" title="解决方式"></a>解决方式</h2><p>在IDEA工具栏中找到<code>Help</code>选项，选择其下的<code>Edit Custom VM Options...</code>, 并在次文件内追加以下内容：</p>
-<figure class="highlight reasonml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">-<span class="module-access"><span class="module"><span class="identifier">Dhttp</span>.</span></span>proxyHost</span><br><span class="line">-<span class="module-access"><span class="module"><span class="identifier">Dhttp</span>.</span></span>proxyPort</span><br><span class="line">-<span class="module-access"><span class="module"><span class="identifier">Dhttps</span>.</span></span>proxyHost</span><br><span class="line">-<span class="module-access"><span class="module"><span class="identifier">Dhttps</span>.</span></span>proxyPort</span><br><span class="line">-DsocksProxyHost</span><br><span class="line">-DsocksProxyPort</span><br></pre></td></tr></table></figure>
+<h2 id="配置">配置</h2>
+<p>创建<code>~/.docker/config.json</code>文件，并配置如下信息：</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line"> <span class="attr">&quot;proxies&quot;</span>:</span><br><span class="line"> &#123;</span><br><span class="line">   <span class="attr">&quot;default&quot;</span>:</span><br><span class="line">   &#123;</span><br><span class="line">     <span class="attr">&quot;httpProxy&quot;</span>: <span class="string">&quot;http://192.168.2.133:7890&quot;</span>,</span><br><span class="line">     <span class="attr">&quot;httpsProxy&quot;</span>: <span class="string">&quot;http://192.168.2.133:7890&quot;</span>,</span><br><span class="line">     <span class="attr">&quot;allProxy&quot;</span>: <span class="string">&quot;socks5://192.168.2.133:7891&quot;</span></span><br><span class="line">   &#125;</span><br><span class="line"> &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ol>
+<li><strong>httpProxy</strong>:设置http网络访问的代理</li>
+<li><strong>httpsProxy</strong>:配置https网络访问的代理</li>
+<li><strong>allProxy</strong>:配置其他网络访问的代理</li>
+</ol>
+<h2 id="原理">原理</h2>
+<p><strong>docker</strong>会在启动容器时，将以上配置的json，转换为环境变量的形式，上面的配置类似于在<code>Dockerfile</code>中编写如下指令：</p>
+<figure class="highlight dockerfile"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">ENV</span> HTTP_PROXY <span class="string">&quot;http://192.168.2.133:7890&quot;</span></span><br><span class="line"><span class="keyword">ENV</span> HTTPS_PROXY <span class="string">&quot;http://192.168.2.133:7890&quot;</span></span><br><span class="line"><span class="keyword">ENV</span> ALL_PROXY <span class="string">&quot;socks5://192.168.2.133:7891&quot;</span></span><br></pre></td></tr></table></figure>
+<p>从上面配置可以看出，就相当于我们启动容器后，通过控制台链接到容器，然后修改Linux内核的代理一样。</p>
+<p>我们也可以在启动容器时通过添加参数的方式进行启动容器：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">--env HTTP_PROXY=&quot;http://192.168.2.133:7890&quot;</span><br><span class="line">--env HTTPS_PROXY=&quot;http://192.168.2.133:7890&quot;</span><br><span class="line">--env ALL_PROXY=&quot;socks5://192.168.2.133:7891&quot;</span><br></pre></td></tr></table></figure>
+<h2 id="其他参数">其他参数</h2>
+<ol>
+<li><strong>ftp_proxy</strong>:配置ftp访问的网络</li>
+<li><strong>no_proxy</strong>:不使用代理的网络链接，如 *.test.example.com,.example2.com</li>
+</ol>
 
     </div>
 
@@ -260,37 +272,19 @@
     
 
     <footer class="post-footer">
-          <div class="reward-container">
-  <div></div>
-  <button onclick="document.querySelector('.post-reward').classList.toggle('active');">
-    赞赏
-  </button>
-  <div class="post-reward">
-      <div>
-        <img src="/images/wechatpay.png" alt="Deven Zhou 微信">
-        <span>微信</span>
-      </div>
-      <div>
-        <img src="/images/alipay.png" alt="Deven Zhou 支付宝">
-        <span>支付宝</span>
-      </div>
-
-  </div>
-</div>
-
           <div class="post-tags">
-              <a href="/tags/IDEA/" rel="tag"><i class="fa fa-tag"></i> IDEA</a>
+              <a href="/tags/docker/" rel="tag"><i class="fa fa-tag"></i> docker</a>
           </div>
 
         
 
           <div class="post-nav">
             <div class="post-nav-item">
+                <a href="/article/af510216.html" rel="prev" title="docker镜像下载加速">
+                  <i class="fa fa-chevron-left"></i> docker镜像下载加速
+                </a>
             </div>
             <div class="post-nav-item">
-                <a href="/2021/04/15/hexo%E5%AE%89%E8%A3%85%E6%96%87%E6%A1%A3/" rel="next" title="hexo安装文档">
-                  hexo安装文档 <i class="fa fa-chevron-right"></i>
-                </a>
             </div>
           </div>
     </footer>
@@ -315,7 +309,7 @@
   <span class="with-love">
     <i class="angellist"></i>
   </span>
-  <span class="author" itemprop="copyrightHolder">Deven Zhou</span>
+  <span class="author" itemprop="copyrightHolder">Deven</span>
 </div><script color="0,0,255" opacity="0.5" zIndex="-1" count="99" src="/lib/canvas-nest/canvas-nest.min.js"></script>
 
     </div>
