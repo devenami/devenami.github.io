@@ -181,70 +181,31 @@ custom_file_path:
 在`source/_data`目录下创建`styles.styl`文件，追加以下内容：
 
 ```css
-//博客内容透明化
-//文章内容的透明度设置
-.content-wrap {
-  opacity: 0.9;
-}
-.content {
-	border-radius: 20px; //文章背景设置圆角
-	padding: 80px 30px 10px 30px;
-	background:rgba(255, 255, 255, 0.2) none repeat scroll !important;
+body {
+  background:url(/images/pexels-asad-photo-maldives-1320674.jpg);
+  background-repeat: no-repeat;
+  background-attachment:fixed; 
+  background-size: cover;      
+  background-position:50% 50%;
+  padding-top: 10px;
 }
 
-//侧边框的透明度设置
-.sidebar {
-  opacity: 0.9;
+/* 隐藏上方黑线 */
+.headband {
+  height: 0px;
 }
 
-//菜单栏的透明度设置
+/* 博客内容透明化
+ 文章内容的透明度设置 */
+.content-wrap, .main-inner, .sidebar, .popup {
+  opacity: 0.85;
+}
+
+/* 菜单栏的透明度设置 */
 .header-inner {
-  background: rgba(255,255,255,0.9);
+  background: rgba(255,255,255,0.85);
 }
 
-//搜索框（local-search）的透明度设置
-.popup {
-  opacity: 0.9;
-}
-
-.tag-cloud-tags{
-	margin-top: 3%;
-}
-.tag-cloud a {
-	-webkit-box-shadow: 0 1px 3px rgba(0,0,0,.12),
-	0 1px 2px rgba(0, 0, 0, .24);
-	-moz-box-shadow: 0 1px 3px rgba(0,0,0, .12),
-	0 1px 2px rgba(0,0,0, .24);
-	box-shadow: 0 1px 3px rgba(0, 0,0 .12),
-	0 1px 2px rgba(0,0,0, .24);
-	transition: .2s ease-out;
-	padding: 2px 10px;
-	margin: 8px;
-	background: #eee;
-	border-bottom: none;
-	border-radius: 12px;
-	box-shadow: 0 1px 3px #6f42c1, 0 1px 2px #d9534f;
-	display: inline-block;
-}
-.tag-cloud a:hover{
-	text-decoration: none;
-	background: #64ceaa;
-	color: #fff !important;
-	-webkit-box-shadow: 0 8px 16px 0 rgba(0,0,0,.2),
-	0 6px 20px 0 rgba(0, 0, 0, .19);
-	-moz-box-shadow: 0 8px 16px 0 rgba(0,0,0, .2),
-	0 6px 20px 0 rgba(0,0,0, .19);
-	box-shadow: 0 8px 16px 0 rgba(0, 0,0 .2),
-	0 6px 20px 0 rgba(0,0,0, .19);
-}
-```
-
-同时在`source/_data`目录下创建`variables.styl`文件，内容如下：
-
-```css
-// 圆角设置
-$border-radius-inner     = 20px 20px 20px 20px;
-$border-radius           = 20px;
 ```
 
 修改next配置文件`thmems/next/_config.yaml`
@@ -259,7 +220,6 @@ custom_file_path:
   #footer: source/_data/footer.njk
   footer: source/_data/footer.swig
   #bodyEnd: source/_data/body-end.njk
-  variable: source/_data/variables.styl
   #mixin: source/_data/mixins.styl
   style: source/_data/styles.styl
 ```
