@@ -1,0 +1,22 @@
+# pack-refs with: peeled fully-peeled sorted 
+8e5c52e4da7618c17099c15c8eb8a85c6c7eea01 refs/remotes/origin/clipboard
+b44962daab369c78d0836703c0174a0ee1afaccb refs/remotes/origin/i18n
+b02a186765e096ec5b98c73f05f332cd2eb185c2 refs/remotes/origin/master
+e125ee088604e6e67f43fdb29d73eebac9641e5d refs/remotes/origin/renovate/eslint-7.x
+f1e5326baf638b73dfa022f5ec49e9daa2e96f5a refs/remotes/origin/renovate/js-yaml-4.x
+215e4568784cc72499b6b8ff4744546e344cc4f2 refs/remotes/origin/revert-246-overlay-body-scrollbar
+7f0a9e295974ba809c1512c520e9c6bdc7b115fd refs/remotes/origin/vendors
+f27e45bcaecdfb6fb86187ff4d5eab024ec792c1 refs/tags/v8.0.0
+1e026c7c39a14e13a58001e1ee742273ec913b02 refs/tags/v8.0.0-rc.1
+^d6731e627fb5e24fd587132739dd0a75b3803be1
+e92a3d8cd6105615e6deb089337d296ef5cfcbf4 refs/tags/v8.0.0-rc.2
+036d2d305994e431e09bf76aba4ea302cd654be2 refs/tags/v8.0.0-rc.3
+53a220f3984f5b0e1691b9fa76531ddb402dd998 refs/tags/v8.0.0-rc.4
+74ccc182f3a9d661b30b4084b3ccf1d063a282d4 refs/tags/v8.0.0-rc.5
+460087d6f0ac4e0dc05cf0571ccc38ddf4c79f66 refs/tags/v8.0.1
+ffac31410007fa2e0a94ba821b7287ca86ba11eb refs/tags/v8.0.2
+7bf3e602a16949b430475f2583c86da624ea5301 refs/tags/v8.1.0
+8dd993d2aa209244279a7ebe5aa2f21e23879687 refs/tags/v8.2.0
+941e9817c64bb305e5c61c1117d26d09b1f9013f refs/tags/v8.2.1
+eca3ed344374af0deacfc9494d02a001f8ebf0bd refs/tags/v8.2.2
+59d3ae71fc8bf547fbe67187cd9ccba4f6853a30 refs/tags/v8.3.0
