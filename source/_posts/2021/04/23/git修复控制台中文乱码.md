@@ -1,0 +1,76 @@
+---
+title: git修复控制台中文乱码
+abbrlink: 3c8df8f7
+date: 2021-04-23 20:10:45
+categories:
+- 工具
+- Git
+tags:
+- Git
+---
+## git命令乱码
+
+通过git status查询修改的文件,如果文件名中包含中文, 则会显示乱码, 如下:
+
+```shell
+git status
+位于分支 master
+您的分支领先 'origin/master' 共 2 个提交。
+  （使用 "git push" 来发布您的本地提交）
+
+尚未暂存以备提交的变更：
+  （使用 "git add <文件>..." 更新要提交的内容）
+  （使用 "git restore <文件>..." 丢弃工作区的改动）
+	修改：     linux/shell.md
+
+未跟踪的文件:
+  （使用 "git add <文件>..." 以包含要提交的内容）
+	"\345\244\247\346\225\260\346\215\256/hadoop/\345\207\206\345\244\207\350\231\232\346\213\237\346\234\272.md"
+
+修改尚未加入提交（使用 "git add" 和/或 "git commit -a"）
+```
+
+<!-- more -->
+
+出现的原始是: git会对0x80以上的字符进行quote.
+
+解决的方案为: `git config --global core.quotePath false`
+
+再次查看, 中文就显示正常了.
+
+```shell
+git status
+位于分支 master
+您的分支领先 'origin/master' 共 2 个提交。
+  （使用 "git push" 来发布您的本地提交）
+
+尚未暂存以备提交的变更：
+  （使用 "git add <文件>..." 更新要提交的内容）
+  （使用 "git restore <文件>..." 丢弃工作区的改动）
+	修改：     linux/shell.md
+
+未跟踪的文件:
+  （使用 "git add <文件>..." 以包含要提交的内容）
+	大数据/hadoop/准备虚拟机.md
+
+修改尚未加入提交（使用 "git add" 和/或 "git commit -a"）
+```
+
+## base命令乱码
+
+在windows开发环境中，如果项目使用git作为版本控制工具，使用`git base`额外打开一个窗口会导致在开发工具和`git base`窗口之间来回切换
+
+我们可以将开发工具中的命令行工具替换为`git`附带的`bash.exe`解决多窗口切换问题。
+
+`bash.exe`存在于`git`安装目录的`bin`目录下，例如在`idea`工具中设置`bash.exe`：`Settings -> Tools -> Terminal`, `Shell path`选择`git安装目录/bin/bash.exe`。
+
+当我们修改后重新打开控制台执行命令后发现中文显示乱码了，现在我们要去修改`git安装目录/etc/bash.bashrc`，使用文本编辑器打开该文件，在最后增加如下内容：
+
+
+```shell
+export LANG="zh_CN.UTF-8"
+export LC_ALL="zh_CN.UTF-8"
+```
+
+重新打开控制台，中文就可以正常显示了。
+
