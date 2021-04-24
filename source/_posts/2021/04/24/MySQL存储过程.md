@@ -6,6 +6,7 @@ categories:
 - 数据库
 - MySQL
 tags:
+- MySQL
 - SQL
 - 存储过程
 ---
@@ -13,18 +14,18 @@ tags:
 
 ```sql
 CREATE
-	[DEFINER = user] 
-	PROCEDURE sp_name ([proc_parameter[,...]])
-	[characteristic ...] routine_body
+    [DEFINER = user] 
+    PROCEDURE sp_name ([proc_parameter[,...]])
+    [characteristic ...] routine_body
 ```
 
 ## 创建函数语法
 
 ```sql
 CREATE
-	[DEFINER = user]
-	FUNCTION sp_name ([func_parameter[,...]]) 
-	RETURNS type [characteristic ...] routine_body
+    [DEFINER = user]
+    FUNCTION sp_name ([func_parameter[,...]]) 
+    RETURNS type [characteristic ...] routine_body
 ```
 
 <!-- more -->
@@ -117,35 +118,35 @@ MySQL允许在函数体中包含**DDL**语句，如*create*、*drop*等。同时
 
 ## 声明语句结束符
 
-​	**delimiter $$** 将结束符替换为 **$$**
+​    **delimiter $$** 将结束符替换为 **$$**
 
-​	默认的语句结束符为**；**，在存储过程中更改结束符时，尽量在结束时修改回来。
+​    默认的语句结束符为**；**，在存储过程中更改结束符时，尽量在结束时修改回来。
 
 ## 开始、结束符
 
-​	**begin**...**end**
+​    **begin**...**end**
 
-​	多个结束符之间可以嵌套，开始符和结束符前面可以加标签，如`[label:]begin...end[label]`
+​    多个结束符之间可以嵌套，开始符和结束符前面可以加标签，如`[label:]begin...end[label]`
 
 ## 变量的定义及赋值
 
-​	变量声明使用如下格式
+​    变量声明使用如下格式
 
-​		`declare 变量名[,可定义多个] 数据类型 [default 默认值];`
+​        `declare 变量名[,可定义多个] 数据类型 [default 默认值];`
 
-​	设置变量使用如下格式
+​    设置变量使用如下格式
 
-​		`set 变量名 = 表达式[,变量名 = 表达式...];`
+​        `set 变量名 = 表达式[,变量名 = 表达式...];`
 
 **用户变量**
 
-​	用户变量名一般以**@**开头
+​    用户变量名一般以**@**开头
 
-​	用户变量的作用范围为整个用户区间，用户可以在**任何位置进行访问**，当然也不局限与多个存储过程访问
+​    用户变量的作用范围为整个用户区间，用户可以在**任何位置进行访问**，当然也不局限与多个存储过程访问
 
-​	如 proc_1 设置一个 @my_name 的用户变量，proc_2 访问 @my_name 变量，若proc_1先执行，则proc_2就可以获取到proc_1中定义的变量值
+​    如 proc_1 设置一个 @my_name 的用户变量，proc_2 访问 @my_name 变量，若proc_1先执行，则proc_2就可以获取到proc_1中定义的变量值
 
-​	禁止滥用用户变量，会导致程序难以理解及维护。
+​    禁止滥用用户变量，会导致程序难以理解及维护。
 
 ## 查询数据库中存在的存储过程
 
@@ -171,9 +172,9 @@ drop procedure 数据库名.存储过程名
 
 ```sql
 if 表达式 then
-	代码块
+    代码块
 else
-	代码块
+    代码块
 end if;
 ```
 
@@ -182,9 +183,9 @@ end if;
 ```sql
 case 参数名
 when 参数值 then
-	代码块
+    代码块
 when 参数值 then
-	代码块
+    代码块
 end case;
 ```
 
@@ -194,7 +195,7 @@ end case;
 
 ```sql
 while 循环条件 do
-	代码块
+    代码块
 end while;
 ```
 
@@ -202,7 +203,7 @@ end while;
 
 ```sql
 repeat
-	代码块
+    代码块
 util 循环条件
 end repeat;
 ```
@@ -213,20 +214,20 @@ loop循环没有循环条件，需要用户自己通过 **leave**关键字跳出
 
 ```sql
 标签名:loop
-	代码块
-	if 表达式 then
-		leave 标签名；
-	end if;
+    代码块
+    if 表达式 then
+        leave 标签名；
+    end if;
 end loop;
 ```
 
 **标签**
 
-​	标签可以用在 begin repeat while loop 语句前，格式为[标签名:]，标签只能在合法的语句前面使用。
+​    标签可以用在 begin repeat while loop 语句前，格式为[标签名:]，标签只能在合法的语句前面使用。
 
-​	可以使用 **leave 标签名** 跳出循环，使指定达到复合语句的最后一步。
+​    可以使用 **leave 标签名** 跳出循环，使指定达到复合语句的最后一步。
 
-​	也可以使用 **iterate 标签名** 引用复合语句标签来重复开始复合语句。
+​    也可以使用 **iterate 标签名** 引用复合语句标签来重复开始复合语句。
 
 ## 游标
 
