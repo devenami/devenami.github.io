@@ -1,0 +1,852 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.3/css/all.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css">
+
+<script class="next-config" data-name="main" type="application/json">{&quot;hostname&quot;:&quot;devenzhou.github.io&quot;,&quot;root&quot;:&quot;&#x2F;&quot;,&quot;images&quot;:&quot;&#x2F;images&quot;,&quot;scheme&quot;:&quot;Gemini&quot;,&quot;version&quot;:&quot;8.3.0&quot;,&quot;exturl&quot;:false,&quot;sidebar&quot;:{&quot;position&quot;:&quot;left&quot;,&quot;display&quot;:&quot;post&quot;,&quot;padding&quot;:18,&quot;offset&quot;:12},&quot;copycode&quot;:true,&quot;bookmark&quot;:{&quot;enable&quot;:false,&quot;color&quot;:&quot;#222&quot;,&quot;save&quot;:&quot;auto&quot;},&quot;fancybox&quot;:false,&quot;mediumzoom&quot;:false,&quot;lazyload&quot;:false,&quot;pangu&quot;:false,&quot;comments&quot;:{&quot;style&quot;:&quot;tabs&quot;,&quot;active&quot;:null,&quot;storage&quot;:true,&quot;lazyload&quot;:false,&quot;nav&quot;:null},&quot;motion&quot;:{&quot;enable&quot;:true,&quot;async&quot;:false,&quot;transition&quot;:{&quot;post_block&quot;:&quot;fadeIn&quot;,&quot;post_header&quot;:&quot;fadeInDown&quot;,&quot;post_body&quot;:&quot;fadeInDown&quot;,&quot;coll_header&quot;:&quot;fadeInLeft&quot;,&quot;sidebar&quot;:&quot;fadeInUp&quot;}},&quot;prism&quot;:false,&quot;i18n&quot;:{&quot;placeholder&quot;:&quot;搜索...&quot;,&quot;empty&quot;:&quot;没有找到任何搜索结果：${query}&quot;,&quot;hits_time&quot;:&quot;找到 ${hits} 个搜索结果（用时 ${time} 毫秒）&quot;,&quot;hits&quot;:&quot;找到 ${hits} 个搜索结果&quot;}}</script>
+<meta name="description" content="该引用文档描述了如何使用protocol buffer语言来构造你自己的protocol buffer数据，包含.proto文件语法和如何通过.proto生成可访问的数据。 定义一个消息类型第一步，让我们来看一个非常简单的例子。现在你想定义一个搜索请求的消息格式，每个搜索请求有一个查询字符串、你感兴趣的当前结果的页码以及一个每页显示的结果数。在这里你使用了一个.proto文件定义了一个消息类型。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="protobuf3使用文档">
+<meta property="og:url" content="https://devenzhou.github.io/article/ec3657e2.html">
+<meta property="og:site_name" content="听风雨">
+<meta property="og:description" content="该引用文档描述了如何使用protocol buffer语言来构造你自己的protocol buffer数据，包含.proto文件语法和如何通过.proto生成可访问的数据。 定义一个消息类型第一步，让我们来看一个非常简单的例子。现在你想定义一个搜索请求的消息格式，每个搜索请求有一个查询字符串、你感兴趣的当前结果的页码以及一个每页显示的结果数。在这里你使用了一个.proto文件定义了一个消息类型。">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2021-04-24T06:43:32.000Z">
+<meta property="article:modified_time" content="2021-04-24T06:45:39.950Z">
+<meta property="article:author" content="Deven">
+<meta property="article:tag" content="Protobuf">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://devenzhou.github.io/article/ec3657e2.html">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{&quot;sidebar&quot;:&quot;&quot;,&quot;isHome&quot;:false,&quot;isPost&quot;:true,&quot;lang&quot;:&quot;zh-CN&quot;,&quot;comments&quot;:true,&quot;permalink&quot;:&quot;https:&#x2F;&#x2F;devenzhou.github.io&#x2F;article&#x2F;ec3657e2.html&quot;,&quot;path&quot;:&quot;article&#x2F;ec3657e2.html&quot;,&quot;title&quot;:&quot;protobuf3使用文档&quot;}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">&quot;&quot;</script>
+<title>protobuf3使用文档 | 听风雨</title><script src="/js/config.js"></script>
+  
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <h1 class="site-title">听风雨</h1>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu">
+        <li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li>
+        <li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签<span class="badge">22</span></a></li>
+        <li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">23</span></a></li>
+        <li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">53</span></a></li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%9A%E4%B9%89%E4%B8%80%E4%B8%AA%E6%B6%88%E6%81%AF%E7%B1%BB%E5%9E%8B"><span class="nav-number">1.</span> <span class="nav-text">定义一个消息类型</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%8C%87%E5%AE%9A%E5%B1%9E%E6%80%A7%E7%9A%84%E7%B1%BB%E5%9E%8B"><span class="nav-number">1.1.</span> <span class="nav-text">指定属性的类型</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%8C%87%E5%AE%9A%E5%B1%9E%E6%80%A7%E6%95%B0%E5%AD%97"><span class="nav-number">1.2.</span> <span class="nav-text">指定属性数字</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%8C%87%E5%AE%9A%E5%B1%9E%E6%80%A7%E7%9A%84%E8%A7%84%E5%88%99"><span class="nav-number">1.3.</span> <span class="nav-text">指定属性的规则</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%B7%BB%E5%8A%A0%E6%9B%B4%E5%A4%9A%E7%9A%84%E6%B6%88%E6%81%AF%E7%B1%BB%E5%9E%8B"><span class="nav-number">1.4.</span> <span class="nav-text">添加更多的消息类型</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%B7%BB%E5%8A%A0%E6%B3%A8%E9%87%8A"><span class="nav-number">1.5.</span> <span class="nav-text">添加注释</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BF%9D%E7%95%99%E5%B1%9E%E6%80%A7"><span class="nav-number">1.6.</span> <span class="nav-text">保留属性</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%A6%82%E4%BD%95%E4%BB%8E-proto%E6%96%87%E4%BB%B6%E8%BF%9B%E8%A1%8C%E7%94%9F%E6%88%90"><span class="nav-number">1.7.</span> <span class="nav-text">如何从.proto文件进行生成</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%A0%87%E9%87%8F%E5%80%BC%E7%B1%BB%E5%9E%8B"><span class="nav-number">2.</span> <span class="nav-text">标量值类型</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%BB%98%E8%AE%A4%E5%80%BC"><span class="nav-number">3.</span> <span class="nav-text">默认值</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%9E%9A%E4%B8%BE"><span class="nav-number">4.</span> <span class="nav-text">枚举</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8%E5%85%B6%E4%BB%96%E7%9A%84%E6%B6%88%E6%81%AF%E7%B1%BB%E5%9E%8B"><span class="nav-number">5.</span> <span class="nav-text">使用其他的消息类型</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#import-%E5%AE%9A%E4%B9%89"><span class="nav-number">5.1.</span> <span class="nav-text">import 定义</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%B5%8C%E5%A5%97%E7%B1%BB%E5%9E%8B"><span class="nav-number">6.</span> <span class="nav-text">嵌套类型</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%9B%B4%E6%96%B0%E6%B6%88%E6%81%AF%E7%B1%BB%E5%9E%8B"><span class="nav-number">7.</span> <span class="nav-text">更新消息类型</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%9C%AA%E7%9F%A5%E7%9A%84%E5%B1%9E%E6%80%A7"><span class="nav-number">8.</span> <span class="nav-text">未知的属性</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Any"><span class="nav-number">9.</span> <span class="nav-text">Any</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Oneof"><span class="nav-number">10.</span> <span class="nav-text">Oneof</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8-Oneof"><span class="nav-number">10.1.</span> <span class="nav-text">使用 Oneof</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Oneof-%E7%89%B9%E6%80%A7"><span class="nav-number">10.2.</span> <span class="nav-text">Oneof 特性</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%90%91%E5%90%8E%E5%85%BC%E5%AE%B9%E6%80%A7%E9%97%AE%E9%A2%98"><span class="nav-number">10.3.</span> <span class="nav-text">向后兼容性问题</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Maps"><span class="nav-number">11.</span> <span class="nav-text">Maps</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%90%91%E5%90%8E%E5%85%BC%E5%AE%B9%E6%80%A7"><span class="nav-number">11.1.</span> <span class="nav-text">向后兼容性</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Packages"><span class="nav-number">12.</span> <span class="nav-text">Packages</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%9A%E4%B9%89-Service"><span class="nav-number">13.</span> <span class="nav-text">定义 Service</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#JSON-%E6%98%A0%E5%B0%84"><span class="nav-number">14.</span> <span class="nav-text">JSON 映射</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#JSON-%E9%80%89%E9%A1%B9"><span class="nav-number">14.1.</span> <span class="nav-text">JSON 选项</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Options"><span class="nav-number">15.</span> <span class="nav-text">Options</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%94%9F%E6%88%90%E7%B1%BB"><span class="nav-number">16.</span> <span class="nav-text">生成类</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Deven"
+      src="/images/avatar.jpeg">
+  <p class="site-author-name" itemprop="name">Deven</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">53</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">23</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">22</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author site-overview-item animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/devenzhou" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;devenzhou" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+  </div>
+
+
+
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://devenzhou.github.io/article/ec3657e2.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpeg">
+      <meta itemprop="name" content="Deven">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="听风雨">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          protobuf3使用文档
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+      
+
+      <time title="创建时间：2021-04-24 14:43:32 / 修改时间：14:45:39" itemprop="dateCreated datePublished" datetime="2021-04-24T14:43:32+08:00">2021-04-24</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E5%8D%8F%E8%AE%AE/" itemprop="url" rel="index"><span itemprop="name">协议</span></a>
+        </span>
+          ，
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E5%8D%8F%E8%AE%AE/%E5%BA%8F%E5%88%97%E5%8C%96%E4%B8%8E%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96/" itemprop="url" rel="index"><span itemprop="name">序列化与反序列化</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <p>该引用文档描述了如何使用<code>protocol buffer</code>语言来构造你自己的<code>protocol buffer</code>数据，包含<code>.proto</code>文件语法和如何通过<code>.proto</code>生成可访问的数据。</p>
+<h2 id="定义一个消息类型"><a href="#定义一个消息类型" class="headerlink" title="定义一个消息类型"></a>定义一个消息类型</h2><p>第一步，让我们来看一个非常简单的例子。现在你想定义一个搜索请求的消息格式，每个搜索请求有一个查询字符串、你感兴趣的当前结果的页码以及一个每页显示的结果数。在这里你使用了一个<code>.proto</code>文件定义了一个消息类型。</p>
+<figure class="highlight protobuf"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">syntax = <span class="string">&quot;proto3&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">message</span> <span class="title">SearchRequest</span> </span>&#123;</span><br><span class="line">    <span class="built_in">string</span> query = <span class="number">1</span>;</span><br><span class="line">    <span class="built_in">int32</span> page_number = <span class="number">2</span>;</span><br><span class="line">    <span class="built_in">int32</span> result_per_page = <span class="number">3</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<span id="more"></span>
+
+<ul>
+<li>在文件的第一行我们使用了<code>.proto3</code>语法：如果你没有定义这一行，那么<code>protocol buffer</code>编译器会认为当时使用的是<code>proto2</code>。这必须是文件的第一行非空，非注释行。</li>
+<li><code>SearchRequest</code>的消息定义指定了三个属性(成对的 名称/值)，数据的每一片都包含了消息的类型。每个属性都有一个名字和类型。</li>
+</ul>
+<h3 id="指定属性的类型"><a href="#指定属性的类型" class="headerlink" title="指定属性的类型"></a>指定属性的类型</h3><p>在上面的例子中，所有的属性都是<code>标量类型</code>：两个整形(<code>page_number</code>和<code>result_pre_page</code>)和一个字符串类型(<code>query</code>)，当然，你也可以为属性指定<code>复合类型</code>，包括<code>枚举</code>和其他的消息类型。</p>
+<h3 id="指定属性数字"><a href="#指定属性数字" class="headerlink" title="指定属性数字"></a>指定属性数字</h3><p>就像你看到的，在消息中定义的每个属性都有一个唯一的数字。这个属性数字用于在消息的二进制格式中区分属性，并且你不能改变已被使用的消息类型的数字。需要注意的是数字值在<code>1-15</code>之间的会使用一个字节(byte)进行编码，包含了属性数字和属性类型。属性数字在<code>16-2047</code>的会使用两个字节。你应该给经常出现的消息元素提供<code>1-15</code>之间的数字。切记为将来可能添加的频繁出现的元素留出一些空间。</p>
+<p>最小的属性数字可以被指定为<code>1</code>，最大可以被指定为<code>2^29 - 1</code>或者<code>536870911</code>。你不能使用<code>19000-19999</code>（<code>FieldDescriptor::kFirstReservedNumber</code> - <code>FieldDescriptor::kLastReservedNumber</code>）之间的数字，它们都提供给了<code>protocol buffer</code>的实现。</p>
+<h3 id="指定属性的规则"><a href="#指定属性的规则" class="headerlink" title="指定属性的规则"></a>指定属性的规则</h3><p>消息属性可以是下面的任意一种：</p>
+<ul>
+<li>单一类型：众所周知的消息属性可以有0个或一个值(但是不会多于1个)。并且这是<code>proto3</code>语法默认的属性规则。</li>
+<li><strong>重复类型</strong>：这种消息的属性可以被重复任意次(包含0次)，被重复元素的顺序会被完整的保存下来。</li>
+</ul>
+<p>在<code>proto3</code>中，<code>标量数字类型</code>的字段默认情况相爱使用<code>packed</code>进行编码。</p>
+<h3 id="添加更多的消息类型"><a href="#添加更多的消息类型" class="headerlink" title="添加更多的消息类型"></a>添加更多的消息类型</h3><p>多个消息类型可以定义在一个<code>.proto</code>文件中。如果你定义了多个相关的消息这是很有用的 - 就像下面的例子。如果你想定义一个回复消息对应了就是<code>SearchResponse</code>消息类型，你可以在相同的<code>.proto</code>文件中添加它：</p>
+<figure class="highlight protobuf"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">message</span> <span class="title">SearchRequest</span> </span>&#123;</span><br><span class="line">    <span class="built_in">string</span> query = <span class="number">1</span>;</span><br><span class="line">    <span class="built_in">int32</span> page_number = <span class="number">2</span>;</span><br><span class="line">    <span class="built_in">int32</span> result_per_page = <span class="number">3</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">message</span> <span class="title">SearchResponse</span> </span>&#123;</span><br><span class="line">    ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="添加注释"><a href="#添加注释" class="headerlink" title="添加注释"></a>添加注释</h3><p>在<code>.proto</code>文件中添加注释使用的是<code>C/C++</code>风格的<code>//</code>和<code>/**/</code>语法。</p>
+<figure class="highlight protobuf"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/* SearchRequest represents a search quer, with pagination options to</span></span><br><span class="line"><span class="comment"> * indicate whilch results to include in the response. */</span></span><br><span class="line"><span class="class"><span class="keyword">message</span> <span class="title">SearchRequest</span> </span>&#123;</span><br><span class="line">    <span class="built_in">string</span> query = <span class="number">1</span>;</span><br><span class="line">    <span class="built_in">int32</span> page_number = <span class="number">2</span>;    <span class="comment">// Which page number do we want?</span></span><br><span class="line">    <span class="built_in">int32</span> result_per_page = <span class="number">3</span>;    <span class="comment">// Number of results to return per page.</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="保留属性"><a href="#保留属性" class="headerlink" title="保留属性"></a>保留属性</h3><p>如果你通过完全移除字段或将其注释来更新消息类型，将来的用户可以在对类型进行更新时重用该字段号。如果相同<code>.proto</code>文件的老版本在后来被使用，并且该文件中存在数据混乱或者bug，那么就会导致严重的问题。用于解决这种问题的一种方法是，指定被删除的属性数字(或者名字，但是会导致JSON序列化问题)为<code>保留的</code>。如果未来有用户尝试使用那些属性标识，那么编译器会提示用户。</p>
+<figure class="highlight protobuf"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">message</span> <span class="title">Foo</span> </span>&#123;</span><br><span class="line">    reserved <span class="number">2</span>, <span class="number">15</span>, <span class="number">9</span> to <span class="number">11</span>;</span><br><span class="line">    reserved <span class="string">&quot;foo&quot;</span>, <span class="string">&quot;bar&quot;</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>在同一个<code>reserved</code>内不能同时混用数字和名称。</p>
+<h3 id="如何从-proto文件进行生成"><a href="#如何从-proto文件进行生成" class="headerlink" title="如何从.proto文件进行生成"></a>如何从<code>.proto</code>文件进行生成</h3><p>当你在<code>.proto</code>文件上运行<code>protocol buffer</code>编译器时，编译器会生成你选择的语言，你可以使用你再文件中描述的消息类型进行工作，包含了获取和设置属性值，序列化消息到输出流及从输入流反序列化消息。</p>
+<ul>
+<li>C++，编译器从每个<code>.proto</code>文件中描述的消息类型生成了一个<code>.h</code>和<code>.cc</code>文件</li>
+<li>Java，编译器为每个消息类型生成一个<code>.java</code>文件，同时生成了一个特殊的<code>Builder</code>类用于创建消息实例。</li>
+<li>Python：Python编译器会生成一个模块，该模块带有<code>.proto</code>中每种消息类型的静态描述符，然后与原类一起使用，以在运行时创建必要的Python数据访问类。</li>
+<li>Go，编译器为每个在文件中的消息类型生成了一个<code>.pb.go</code>的文件</li>
+</ul>
+<h2 id="标量值类型"><a href="#标量值类型" class="headerlink" title="标量值类型"></a>标量值类型</h2><p>一个标量消息属性可以有下面的任意一种类型，下面的表展示了<code>.proto</code>文件中的特殊类型以及自动生成类型的对应关系。</p>
+<table>
+<thead>
+<tr>
+<th align="left">.proto Type</th>
+<th align="left">Notes</th>
+<th align="left">C++ Type</th>
+<th align="left">Java Type</th>
+<th align="left">Python Type[2]</th>
+<th align="left">Go Type</th>
+<th align="left">Ruby Type</th>
+<th align="left">C# Type</th>
+<th align="left">PHP Type</th>
+<th align="left">Dart Type</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">double</td>
+<td align="left"></td>
+<td align="left">double</td>
+<td align="left">double</td>
+<td align="left">float</td>
+<td align="left">float64</td>
+<td align="left">Float</td>
+<td align="left">double</td>
+<td align="left">float</td>
+<td align="left">double</td>
+</tr>
+<tr>
+<td align="left">float</td>
+<td align="left"></td>
+<td align="left">float</td>
+<td align="left">float</td>
+<td align="left">float</td>
+<td align="left">float32</td>
+<td align="left">Float</td>
+<td align="left">float</td>
+<td align="left">float</td>
+<td align="left">double</td>
+</tr>
+<tr>
+<td align="left">int32</td>
+<td align="left">Uses variable-length encoding. Inefficient for encoding negative numbers – if your field is likely to have negative values, use sint32 instead.</td>
+<td align="left">int32</td>
+<td align="left">int</td>
+<td align="left">int</td>
+<td align="left">int32</td>
+<td align="left">Fixnum or Bignum (as required)</td>
+<td align="left">int</td>
+<td align="left">integer</td>
+<td align="left">int</td>
+</tr>
+<tr>
+<td align="left">int64</td>
+<td align="left">Uses variable-length encoding. Inefficient for encoding negative numbers – if your field is likely to have negative values, use sint64 instead.</td>
+<td align="left">int64</td>
+<td align="left">long</td>
+<td align="left">int/long[3]</td>
+<td align="left">int64</td>
+<td align="left">Bignum</td>
+<td align="left">long</td>
+<td align="left">integer/string[5]</td>
+<td align="left">Int64</td>
+</tr>
+<tr>
+<td align="left">uint32</td>
+<td align="left">Uses variable-length encoding.</td>
+<td align="left">uint32</td>
+<td align="left">int[1]</td>
+<td align="left">int/long[3]</td>
+<td align="left">uint32</td>
+<td align="left">Fixnum or Bignum (as required)</td>
+<td align="left">uint</td>
+<td align="left">integer</td>
+<td align="left">int</td>
+</tr>
+<tr>
+<td align="left">uint64</td>
+<td align="left">Uses variable-length encoding.</td>
+<td align="left">uint64</td>
+<td align="left">long[1]</td>
+<td align="left">int/long[3]</td>
+<td align="left">uint64</td>
+<td align="left">Bignum</td>
+<td align="left">ulong</td>
+<td align="left">integer/string[5]</td>
+<td align="left">Int64</td>
+</tr>
+<tr>
+<td align="left">sint32</td>
+<td align="left">Uses variable-length encoding. Signed int value. These more efficiently encode negative numbers than regular int32s.</td>
+<td align="left">int32</td>
+<td align="left">int</td>
+<td align="left">int</td>
+<td align="left">int32</td>
+<td align="left">Fixnum or Bignum (as required)</td>
+<td align="left">int</td>
+<td align="left">integer</td>
+<td align="left">int</td>
+</tr>
+<tr>
+<td align="left">sint64</td>
+<td align="left">Uses variable-length encoding. Signed int value. These more efficiently encode negative numbers than regular int64s.</td>
+<td align="left">int64</td>
+<td align="left">long</td>
+<td align="left">int/long[3]</td>
+<td align="left">int64</td>
+<td align="left">Bignum</td>
+<td align="left">long</td>
+<td align="left">integer/string[5]</td>
+<td align="left">Int64</td>
+</tr>
+<tr>
+<td align="left">fixed32</td>
+<td align="left">Always four bytes. More efficient than uint32 if values are often greater than 228.</td>
+<td align="left">uint32</td>
+<td align="left">int[1]</td>
+<td align="left">int/long[3]</td>
+<td align="left">uint32</td>
+<td align="left">Fixnum or Bignum (as required)</td>
+<td align="left">uint</td>
+<td align="left">integer</td>
+<td align="left">int</td>
+</tr>
+<tr>
+<td align="left">fixed64</td>
+<td align="left">Always eight bytes. More efficient than uint64 if values are often greater than 256.</td>
+<td align="left">uint64</td>
+<td align="left">long[1]</td>
+<td align="left">int/long[3]</td>
+<td align="left">uint64</td>
+<td align="left">Bignum</td>
+<td align="left">ulong</td>
+<td align="left">integer/string[5]</td>
+<td align="left">Int64</td>
+</tr>
+<tr>
+<td align="left">sfixed32</td>
+<td align="left">Always four bytes.</td>
+<td align="left">int32</td>
+<td align="left">int</td>
+<td align="left">int</td>
+<td align="left">int32</td>
+<td align="left">Fixnum or Bignum (as required)</td>
+<td align="left">int</td>
+<td align="left">integer</td>
+<td align="left">int</td>
+</tr>
+<tr>
+<td align="left">sfixed64</td>
+<td align="left">Always eight bytes.</td>
+<td align="left">int64</td>
+<td align="left">long</td>
+<td align="left">int/long[3]</td>
+<td align="left">int64</td>
+<td align="left">Bignum</td>
+<td align="left">long</td>
+<td align="left">integer/string[5]</td>
+<td align="left">Int64</td>
+</tr>
+<tr>
+<td align="left">bool</td>
+<td align="left"></td>
+<td align="left">bool</td>
+<td align="left">boolean</td>
+<td align="left">bool</td>
+<td align="left">bool</td>
+<td align="left">TrueClass/FalseClass</td>
+<td align="left">bool</td>
+<td align="left">boolean</td>
+<td align="left">bool</td>
+</tr>
+<tr>
+<td align="left">string</td>
+<td align="left">A string must always contain UTF-8 encoded or 7-bit ASCII text, and cannot be longer than 232.</td>
+<td align="left">string</td>
+<td align="left">String</td>
+<td align="left">str/unicode[4]</td>
+<td align="left">string</td>
+<td align="left">String (UTF-8)</td>
+<td align="left">string</td>
+<td align="left">string</td>
+<td align="left">String</td>
+</tr>
+<tr>
+<td align="left">bytes</td>
+<td align="left">May contain any arbitrary sequence of bytes no longer than 232.</td>
+<td align="left">string</td>
+<td align="left">ByteString</td>
+<td align="left">str</td>
+<td align="left">[]byte</td>
+<td align="left">String (ASCII-8BIT)</td>
+<td align="left">ByteString</td>
+<td align="left">string</td>
+<td align="left"></td>
+</tr>
+</tbody></table>
+<h2 id="默认值"><a href="#默认值" class="headerlink" title="默认值"></a>默认值</h2><p>当消息被解析时，如果被编码的消息没有包含指定的元素，那么那个属性被解析的对象将会被赋值默认值。下面是指定类型的默认值。</p>
+<ul>
+<li>string类型默认的是空字符串</li>
+<li>bytes类型默认的空字节</li>
+<li>bool类型默认为false</li>
+<li>数值类型默认值为0</li>
+<li>枚举类型默认值为第一个定义的类型，第一个属性的数字需要被设置为0</li>
+<li>消息类型默认值不会被设置。它依赖于语言。</li>
+</ul>
+<p><code>repeated</code>属性的默认值为空(在适当的语言中通常是一个空列表)。</p>
+<p>需要注意的是，对于一个标量类型，每个被解析的消息并没有办法知道该属性是否被明确的设置为默认值(例如一个boolean类型的值并无法知道是否被设置为false)或者没有被设置：当你定义消息类型是应非常小心。例如：如果你不想在默认的情况下boolean类型被设置为false时永远发生一种行为，那么你就不应该使用boolean的默认值。也要注意的是，如果标量的值被设置为默认值，那么该值也不会在写出的时候被序列化。</p>
+<h2 id="枚举"><a href="#枚举" class="headerlink" title="枚举"></a>枚举</h2><p>当你定义一个消息类型时，你可能只想要预定义的属性列表中的一个属性。你可以定义一个<code>enum</code>到你的消息中，并为每一个可能的值指定一个常量。</p>
+<figure class="highlight protobuf"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">message</span> <span class="title">SearchRequest</span> </span>&#123;</span><br><span class="line">    <span class="built_in">string</span> query = <span class="number">1</span>;</span><br><span class="line">    <span class="built_in">int32</span> page_number = <span class="number">2</span>;</span><br><span class="line">    <span class="built_in">int32</span> result_per_page = <span class="number">3</span>;</span><br><span class="line">    <span class="class"><span class="keyword">enum</span> <span class="title">Corpus</span> </span>&#123;</span><br><span class="line">        UNIVERSAL = <span class="number">0</span>;</span><br><span class="line">        WEB = <span class="number">1</span>;</span><br><span class="line">        IMAGES = <span class="number">2</span>;</span><br><span class="line">        LOCAL = <span class="number">3</span>;</span><br><span class="line">        NEWS = <span class="number">4</span>;</span><br><span class="line">        PRODUCTS = <span class="number">5</span>;</span><br><span class="line">        VIDEO = <span class="number">6</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    Corpus corpus = <span class="number">4</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>就像你看到的，<code>Corpus</code>的第一个属性被设置为0：每个枚举定义<strong>必须</strong>包含第一个元素且被映射为0。这是因为：</p>
+<ul>
+<li>它被设置为0值，那么我们就可以使用0作为数值类型的默认值</li>
+<li>0值必须被放在第一个元素是是因为兼容<code>proto2</code>的第一个属性值为枚举的默认值</li>
+</ul>
+<p>你可以为相同的枚举值定义别名实现不同的枚举常量。为了实现这种效果你需要设置<code>allow_alias</code>的可选项为<code>true</code>，否则编译时就会出错。</p>
+<figure class="highlight protobuf"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">enum</span> <span class="title">EnumAllowingAlias</span> </span>&#123;</span><br><span class="line">    <span class="keyword">option</span> allow_alias = <span class="literal">true</span>;</span><br><span class="line">    UNKNOWN = <span class="number">0</span>;</span><br><span class="line">    STARTED = <span class="number">1</span>;</span><br><span class="line">    RUNNING = <span class="number">1</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="class"><span class="keyword">enum</span> <span class="title">EnumNotAllowingAlias</span> </span>&#123;</span><br><span class="line">    UNKNOWN = <span class="number">0</span>;</span><br><span class="line">    STARTED = <span class="number">1</span>;</span><br><span class="line">    <span class="comment">// RUNNING = 1;  // Uncommenting this line will cause a compile error inside Google and a warning message outside.</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>枚举常量的值必须在32为整形的范围内。</p>
+<h2 id="使用其他的消息类型"><a href="#使用其他的消息类型" class="headerlink" title="使用其他的消息类型"></a>使用其他的消息类型</h2><p>你可以使用其他的消息类型作为属性类型。</p>
+<figure class="highlight protobuf"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">message</span> <span class="title">SearchResponse</span> </span>&#123;</span><br><span class="line">    <span class="keyword">repeated</span> Result results = <span class="number">1</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">message</span> <span class="title">Result</span> </span>&#123;</span><br><span class="line">    <span class="built_in">string</span> url = <span class="number">1</span>;</span><br><span class="line">    <span class="built_in">string</span> title = <span class="number">2</span>;</span><br><span class="line">    <span class="keyword">repeated</span> <span class="built_in">string</span> snippets = <span class="number">3</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="import-定义"><a href="#import-定义" class="headerlink" title="import 定义"></a>import 定义</h3><p>在上面例子中，<code>Result</code>消息类型被定义在<code>SearchResponse</code>相同的文件中。</p>
+<p>你可以使用定义在其他<code>.proto</code>文件的消息类型，并使用<code>import</code>导入他们。导入其他的<code>.proto</code>文件的定义，你需要在文件中添加一个导入块。</p>
+<figure class="highlight protobuf"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> <span class="string">&quot;myproject/other_protos.proto&quot;</span>;</span><br></pre></td></tr></table></figure>
+
+<p>默认情况下，你只能使用直接导入的<code>.proto</code>文件中的定义。但是有些情况下你需要将<code>.proto</code>文件移动到一个新的位置。现在你可以将虚拟的<code>.proto</code>文件放在旧位置，而不是直接移动<code>.proto</code>文件并一次更改所有被调用的位置，而是使用导入公共概念将所有导入转发到新位置。任何导入的<code>proto</code>包含<code>import public</code>块，它的依赖就可以向下进行传递。</p>
+<figure class="highlight protobuf"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// new.proto</span></span><br><span class="line"><span class="comment">// 所有的定义都被移动到这里</span></span><br></pre></td></tr></table></figure>
+
+<figure class="highlight protobuf"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// old.proto</span></span><br><span class="line"><span class="comment">// 这个proto被所有的客户端导入</span></span><br><span class="line"><span class="keyword">import</span> public <span class="string">&quot;new.proto&quot;</span></span><br><span class="line"><span class="keyword">import</span> <span class="string">&quot;other.proto&quot;</span></span><br></pre></td></tr></table></figure>
+
+<figure class="highlight protobuf"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// client.proto</span></span><br><span class="line"><span class="keyword">import</span> <span class="string">&quot;old.proto&quot;</span></span><br><span class="line"><span class="comment">// 你可以使用old.proto和new.proto中的定义项，但是不能使用other.proto的定义项</span></span><br></pre></td></tr></table></figure>
+
+<p>protocol编译器使用在编译命令行上使用<code>-I</code>或<code>--proto_path</code>标记设置的一系列目录搜索被导入的文件。如果没有设置标记，那么编译器会搜索编译器被调用的目录。常规情况下，你应该设置<code>--proto_path</code>标记作为项目的根目录，并为所有被导入的元素使用全限定名。</p>
+<h2 id="嵌套类型"><a href="#嵌套类型" class="headerlink" title="嵌套类型"></a>嵌套类型</h2><p>你可以在其他消息类型中定义和使用消息。</p>
+<figure class="highlight protobuf"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">message</span> <span class="title">SearchResponse</span> </span>&#123;</span><br><span class="line">    <span class="class"><span class="keyword">message</span> <span class="title">Result</span> </span>&#123;</span><br><span class="line">        <span class="built_in">string</span> url = <span class="number">1</span>;</span><br><span class="line">        <span class="built_in">string</span> title = <span class="number">2</span>;</span><br><span class="line">        <span class="keyword">repeated</span> <span class="built_in">string</span> snippets = <span class="number">3</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">repeated</span> Result results = <span class="number">1</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>如果你想在父消息体之外使用消息，那么你需要引用<code>Parent.Type</code>:</p>
+<figure class="highlight protobuf"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">message</span> <span class="title">SomeOtherMessage</span> </span>&#123;</span><br><span class="line">    SearchResponse.Result result = <span class="number">1</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>也可以更深层的嵌套消息结构：</p>
+<figure class="highlight protobuf"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">message</span> <span class="title">Outer</span> </span>&#123;                  <span class="comment">// Level 0</span></span><br><span class="line">  <span class="class"><span class="keyword">message</span> <span class="title">MiddleAA</span> </span>&#123;  <span class="comment">// Level 1</span></span><br><span class="line">    <span class="class"><span class="keyword">message</span> <span class="title">Inner</span> </span>&#123;   <span class="comment">// Level 2</span></span><br><span class="line">      <span class="built_in">int64</span> ival = <span class="number">1</span>;</span><br><span class="line">      <span class="built_in">bool</span>  booly = <span class="number">2</span>;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="class"><span class="keyword">message</span> <span class="title">MiddleBB</span> </span>&#123;  <span class="comment">// Level 1</span></span><br><span class="line">    <span class="class"><span class="keyword">message</span> <span class="title">Inner</span> </span>&#123;   <span class="comment">// Level 2</span></span><br><span class="line">      <span class="built_in">int32</span> ival = <span class="number">1</span>;</span><br><span class="line">      <span class="built_in">bool</span>  booly = <span class="number">2</span>;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="更新消息类型"><a href="#更新消息类型" class="headerlink" title="更新消息类型"></a>更新消息类型</h2><p>更新消息类型需要符合以下规则：</p>
+<ul>
+<li>不用改变任何已存在属性的数字</li>
+<li>如果你添加了新的属性，任何使用<strong>旧</strong>消息格式系列化的消息仍然可以被新生成的代码解析。你需要特别注意那么由于老代码产生的默认值。类似的，新代码创建的消息也可以被老代码解析：老代码会在解析时简单的忽略新的属性。</li>
+<li>只要在你更新的消息类型中不会再次使用原来的数字，那么属性可以被移除。你可能项重命名属性或者添加一个前缀，或者使属性数字作为<code>reserved</code>(保留)，那么以后在你的<code>.proto</code>中不会重新使用该数字。</li>
+<li><code>int32</code>,<code>uint32</code>,<code>int64</code>,<code>uint64</code>和<code>bool</code>都是兼容的。这意味着你可以在这些属性类型中向前或向后兼容。</li>
+<li><code>sint32</code>和<code>sint64</code>互相兼容，但是和其他的整形类型是不兼容的。</li>
+<li><code>string</code>和<code>bytes</code>互相兼容，也就是说它们都是验证过的<code>UTF-8</code>字节。</li>
+<li>如果字节中包含一个消息的编码版本，那么嵌入的消息和<code>bytes</code>兼容。</li>
+<li><code>fixed32</code>和<code>sfixed32</code>,<code>fixed64</code>，<code>sfixed64</code>兼容。</li>
+<li><code>enum</code>和<code>int32</code>,<code>uint32</code>,<code>int64</code>,<code>uint64</code>在某些方面兼容（需要注意的是如果值不匹配则会被截断）。</li>
+<li>改变一个单独的值到一个新的<code>oneof</code>是安全并且二进制兼容的。如果你能确保在同一时间只存在一个代码进行设值，那么移动多个属性到一个新的<code>oneof</code>可能是安全的。移动任意的属性到一个已存在的<code>oneof</code>是不安全的。</li>
+</ul>
+<h2 id="未知的属性"><a href="#未知的属性" class="headerlink" title="未知的属性"></a>未知的属性</h2><p>位置属性是格式正确的协议缓冲区序列化数据，表示解释器无法识别的属性。例如：当一个老的二进制解析器解析一个带有新属性的新的二进制数据时，那些新的属性在老的二进制中就是位置属性。</p>
+<p>常规上，<code>proto3</code>消息在解析时始终会忽略位置的属性，但在3.5版本中，我们重新引入了保留位置属性以匹配<code>proto2</code>行为的功能。在3.5版本或更高的版本中，位置字段将在解析期间保留并包含在序列化输出中。</p>
+<h2 id="Any"><a href="#Any" class="headerlink" title="Any"></a>Any</h2><p>一个<code>Any</code>消息类型可以让你在不引入其他<code>.proto</code>定义的情况下作为一个嵌入式消息使用。<code>Any</code>包含任意序列化的消息(以字节为单位)以及URL，URL作为该消息的类型并解析为该消息的类型的全局唯一标识符。使用<code>Any</code>类型需要导入<code>google/protobuf/any.proto</code></p>
+<figure class="highlight protobuf"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> <span class="string">&quot;google/protobuf/any.proto&quot;</span>;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">message</span> <span class="title">ErrorStatus</span> </span>&#123;</span><br><span class="line">  <span class="built_in">string</span> <span class="class"><span class="keyword">message</span> = 1;</span></span><br><span class="line"><span class="class">  <span class="title">repeated</span> google.protobuf.Any details = 2;</span></span><br><span class="line"><span class="class">&#125;</span></span><br></pre></td></tr></table></figure>
+
+<p>对于给定的消息类型，默认类型的URL是<code>type.googleapis.com/packagename.messagename</code>。</p>
+<p>不同的语言实现将支持运行时库帮助程序以类型安全的方式打包或解压缩任何值。例如：在java中，Any类型会指定<code>pack()</code>和<code>unpack()</code>访问器，在C++中是<code>PackFrom()</code>和<code>UnpackTo()</code>方法。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// Storing an arbitrary message type in Any.</span></span><br><span class="line">NetworkErrorDetails details = ...;</span><br><span class="line">ErrorStatus status;</span><br><span class="line">status.<span class="built_in">add_details</span>()-&gt;<span class="built_in">PackFrom</span>(details);</span><br><span class="line"></span><br><span class="line"><span class="comment">// Reading an arbitrary message from Any.</span></span><br><span class="line">ErrorStatus status = ...;</span><br><span class="line"><span class="keyword">for</span> (<span class="keyword">const</span> Any&amp; detail : status.<span class="built_in">details</span>()) &#123;</span><br><span class="line">  <span class="keyword">if</span> (detail.Is&lt;NetworkErrorDetails&gt;()) &#123;</span><br><span class="line">    NetworkErrorDetails network_error;</span><br><span class="line">    detail.<span class="built_in">UnpackTo</span>(&amp;network_error);</span><br><span class="line">    ... processing network_error ...</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="Oneof"><a href="#Oneof" class="headerlink" title="Oneof"></a>Oneof</h2><p>如果你有一个很多属性的消息，并且所有的属性都会在同一时刻被设置，你可以使用<code>oneof</code>特性执行这种行为以节省内存。</p>
+<p>类似于常规字段，共享内存字段除外，在同一时刻只能有一个属性被设值。设置<code>oneof</code>的任何成员会自动清除所有其他成员。你可以使用<code>case()</code>或<code>WhilchOneOf()</code>方法来检查<code>oneof</code>中的哪个值(如果有的话),具体取决于你选择的语言。</p>
+<h3 id="使用-Oneof"><a href="#使用-Oneof" class="headerlink" title="使用 Oneof"></a>使用 Oneof</h3><p>在<code>.proto</code>中定义<code>oneof</code>，你应该使用<code>oneof</code>关键字并在后面紧跟<code>oneof</code>的名称：</p>
+<figure class="highlight protobuf"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">message</span> <span class="title">SampleMessage</span> </span>&#123;</span><br><span class="line">  <span class="keyword">oneof</span> test_oneof &#123;</span><br><span class="line">    <span class="built_in">string</span> name = <span class="number">4</span>;</span><br><span class="line">    SubMessage sub_message = <span class="number">9</span>;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>现在添加了一个<code>oneof</code>属性到<code>oneof</code>的定义中，你可以添加任意类型的属性，但是并不能使用<code>repeated</code>类型的属性。</p>
+<p>在生成的代码中，<code>oneof</code>属性拥有和常规属性一样的getter和setter方法。你也可以使用指定的方法来检查<code>oneof</code>的值是否被设置。</p>
+<h3 id="Oneof-特性"><a href="#Oneof-特性" class="headerlink" title="Oneof 特性"></a>Oneof 特性</h3><ul>
+<li><p>设置一个<code>oneof</code>的属性会自动清空其他<code>oneof</code>的成员。也就是说，如果你要设置多个<code>oneof</code>属性的值，只有最后一个你设置的属性才会有值。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">SampleMessage message;</span><br><span class="line">message.<span class="built_in">set_name</span>(<span class="string">&quot;name&quot;</span>);</span><br><span class="line"><span class="built_in">CHECK</span>(message.<span class="built_in">has_name</span>());</span><br><span class="line">message.<span class="built_in">mutable_sub_message</span>();   <span class="comment">// Will clear name field.</span></span><br><span class="line"><span class="built_in">CHECK</span>(!message.<span class="built_in">has_name</span>());</span><br></pre></td></tr></table></figure></li>
+<li><p>如果在解析时遇到相同的<code>oneof</code>的多个，只有最后一个成员会被用来解析消息。</p>
+</li>
+<li><p><code>oneof</code>内部的属性不能使用<code>repeated</code>。</p>
+</li>
+<li><p>反射API适用于<code>oneof</code>属性</p>
+</li>
+<li><p>如果你设置了<code>oneof</code>的属性为一个默认值，<code>oneof</code>属性的<code>case</code>会被设置，并且该值会在写出时序列化。</p>
+</li>
+<li><p>如果你使用C++，确保你的代码不会导致内存崩溃。下面的代码会崩溃，因为<code>sub+message</code>已经通过调用<code>set_name()</code>方法删除了。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">SampleMessage message;</span><br><span class="line">SubMessage* sub_message = message.<span class="built_in">mutable_sub_message</span>();</span><br><span class="line">message.<span class="built_in">set_name</span>(<span class="string">&quot;name&quot;</span>);      <span class="comment">// Will delete sub_message</span></span><br><span class="line">sub_message-&gt;set_...              <span class="comment">// Crashes here</span></span><br></pre></td></tr></table></figure></li>
+<li><p>还是在C++中，如果你使用<code>Swap()</code>交换两个<code>oneof</code>消息，每个消息都会以对方的情况为准：下面的例子中，<code>msg1</code>会有一个<code>sub_message</code>，<code>msg2</code>会有一个<code>name</code>。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">SampleMessage msg1;</span><br><span class="line">msg1.<span class="built_in">set_name</span>(<span class="string">&quot;name&quot;</span>);</span><br><span class="line">SampleMessage msg2;</span><br><span class="line">msg2.<span class="built_in">mutable_sub_message</span>();</span><br><span class="line">msg1.<span class="built_in">swap</span>(&amp;msg2);</span><br><span class="line"><span class="built_in">CHECK</span>(msg1.<span class="built_in">has_sub_message</span>());</span><br><span class="line"><span class="built_in">CHECK</span>(msg2.<span class="built_in">has_name</span>());</span><br></pre></td></tr></table></figure></li>
+</ul>
+<h3 id="向后兼容性问题"><a href="#向后兼容性问题" class="headerlink" title="向后兼容性问题"></a>向后兼容性问题</h3><p>添加或移除一个<code>oneof</code>属性的术后要特别小心。如果检查<code>oneof</code>属性的值返回<code>None</code>/<code>NOT_SET</code>,这可能意味着<code>oneof</code>没有被设置或者在不同版本的<code>oneof</code>中设置了一个属性。由于无法知道导线上的未知字段是否是<code>oneof</code>的成员，因此无法分辨出差异。</p>
+<h2 id="Maps"><a href="#Maps" class="headerlink" title="Maps"></a>Maps</h2><p>如果你想创建一个关联的map作为你数据定义的一部分，protocol buffers提供了一个简单的语法：</p>
+<figure class="highlight protobuf"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">map&lt;key_type, value_type&gt; map_field = N;</span><br></pre></td></tr></table></figure>
+
+<p>这里的<code>key_type</code>可以是任意的整形获取字符串类型(除浮点类型和<code>bytes</code>类型外的任何标量)。枚举类型是一个非法的<code>key_type</code>。<code>value_type</code>可以是除了其他map类型的任意类型。</p>
+<figure class="highlight protobuf"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">map&lt;<span class="built_in">string</span>, Project&gt; projects = <span class="number">3</span>;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>map属性不能是<code>repeated</code>。</li>
+<li>不能依赖map迭代的顺序。</li>
+<li>当从一个<code>.proto</code>生成一个文本格式时，map会根据key进行排序。</li>
+<li>当解析或者何明时，如果存在相同的key，最后的key会被使用。当从文本格式解析map时，如果遇到相同的key则会失败。</li>
+<li>如果仅提供key并没有提供值，那么这种行为的序列化则会依赖语言。在<code>C++</code>,<code>Java</code>和<code>Python</code>中会使用默认值进行序列化，在其他语言中不会被序列化。</li>
+</ul>
+<p><code>proto3</code>支持的语言当前都已经支持了map的API。</p>
+<h3 id="向后兼容性"><a href="#向后兼容性" class="headerlink" title="向后兼容性"></a>向后兼容性</h3><p>map语法相当于下面的方式，所以不支持map的protocol实现仍然可以处理你的数据。</p>
+<figure class="highlight protobuf"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">message</span> <span class="title">MapFieldEntry</span> </span>&#123;</span><br><span class="line">  key_type key = <span class="number">1</span>;</span><br><span class="line">  value_type value = <span class="number">2</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">repeated</span> MapFieldEntry map_field = N;</span><br></pre></td></tr></table></figure>
+
+<p>任何支持map的protocol实现必须同时可以生产和接受以上方式的定义。</p>
+<h2 id="Packages"><a href="#Packages" class="headerlink" title="Packages"></a>Packages</h2><p>你可以添加一个可选的<code>package</code>说明符到服一个<code>.proto</code>文件中，以此来避免protocol消息类型之间的冲突。</p>
+<figure class="highlight protobuf"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> foo.bar;</span><br><span class="line"><span class="class"><span class="keyword">message</span> <span class="title">Open</span> </span>&#123; ... &#125;</span><br></pre></td></tr></table></figure>
+
+<p>当你定义消息类型的属性时，你可以使用package说明符：</p>
+<figure class="highlight protobuf"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">message</span> <span class="title">Foo</span> </span>&#123;</span><br><span class="line">  ...</span><br><span class="line">  foo.bar.Open open = <span class="number">1</span>;</span><br><span class="line">  ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这种包说明符的方式的影响范围依赖你选择的语言：</p>
+<ul>
+<li>在<code>C++</code>中生成的类被包装在C++ namespace中。例如：<code>Open</code>将会在<code>foo::bar</code>命名空间中。</li>
+<li>在<code>Java</code>中如果没有额外的指定<code>optional java_package</code>，那么package会被作为<code>Java package</code>使用。</li>
+<li>在<code>Go</code>中，如果你没有使用<code>option go_package</code>，那么package会被用作go的包名。</li>
+</ul>
+<h2 id="定义-Service"><a href="#定义-Service" class="headerlink" title="定义 Service"></a>定义 Service</h2><p>如果你想在一个RPC(远程过程调用)系统中使用你的消息类型，你可以在一个<code>.proto</code>文件中定义一个 RPC 服务接口，protocol编译器会生成服务接口和所选语言的存根。例如，你想定义一个RPC方法，通过使用你的<code>SearchRequest</code>并返回一个<code>SearchResponse</code>，你可以向下面这样定义在<code>.proto</code>文件中：</p>
+<figure class="highlight protobuf"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">service</span> <span class="title">SearchService</span> </span>&#123;</span><br><span class="line">  <span class="function"><span class="keyword">rpc</span> Search (SearchRequest) <span class="keyword">returns</span> (SearchResponse)</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="JSON-映射"><a href="#JSON-映射" class="headerlink" title="JSON 映射"></a>JSON 映射</h2><p><code>Proto3</code>支持JSON中的编码规范，使它更容易的在系统之间共享数据。下标按类型对编码进行了描述。</p>
+<p>当把一个JSON编码数据解析为protocol buffer时，如果JSON数据中缺少数值或者它的值为<code>null</code>，那么该值会被解析为默认值。如果在protocol buffer中的属性有一个默认值，那么编码为JSON时，该值在默认情况下会被省略以节省空间。实现方可能提供是否忽略默认属性值的选项。</p>
+<table>
+<thead>
+<tr>
+<th align="left">proto3</th>
+<th align="left">JSON</th>
+<th align="left">JSON example</th>
+<th align="left">Notes</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">message</td>
+<td align="left">object</td>
+<td align="left"><code>&#123;&quot;fooBar&quot;: v, &quot;g&quot;: null, …&#125;</code></td>
+<td align="left">Generates JSON objects. Message field names are mapped to lowerCamelCase and become JSON object keys. If the <code>json_name</code> field option is specified, the specified value will be used as the key instead. Parsers accept both the lowerCamelCase name (or the one specified by the <code>json_name</code> option) and the original proto field name. <code>null</code> is an accepted value for all field types and treated as the default value of the corresponding field type.</td>
+</tr>
+<tr>
+<td align="left">enum</td>
+<td align="left">string</td>
+<td align="left"><code>&quot;FOO_BAR&quot;</code></td>
+<td align="left">The name of the enum value as specified in proto is used. Parsers accept both enum names and integer values.</td>
+</tr>
+<tr>
+<td align="left">map&lt;K,V&gt;</td>
+<td align="left">object</td>
+<td align="left"><code>&#123;&quot;k&quot;: v, …&#125;</code></td>
+<td align="left">All keys are converted to strings.</td>
+</tr>
+<tr>
+<td align="left">repeated V</td>
+<td align="left">array</td>
+<td align="left"><code>[v, …]</code></td>
+<td align="left"><code>null</code> is accepted as the empty list [].</td>
+</tr>
+<tr>
+<td align="left">bool</td>
+<td align="left">true, false</td>
+<td align="left"><code>true, false</code></td>
+<td align="left"></td>
+</tr>
+<tr>
+<td align="left">string</td>
+<td align="left">string</td>
+<td align="left"><code>&quot;Hello World!&quot;</code></td>
+<td align="left"></td>
+</tr>
+<tr>
+<td align="left">bytes</td>
+<td align="left">base64 string</td>
+<td align="left"><code>&quot;YWJjMTIzIT8kKiYoKSctPUB+&quot;</code></td>
+<td align="left">JSON value will be the data encoded as a string using standard base64 encoding with paddings. Either standard or URL-safe base64 encoding with/without paddings are accepted.</td>
+</tr>
+<tr>
+<td align="left">int32, fixed32, uint32</td>
+<td align="left">number</td>
+<td align="left"><code>1, -10, 0</code></td>
+<td align="left">JSON value will be a decimal number. Either numbers or strings are accepted.</td>
+</tr>
+<tr>
+<td align="left">int64, fixed64, uint64</td>
+<td align="left">string</td>
+<td align="left"><code>&quot;1&quot;, &quot;-10&quot;</code></td>
+<td align="left">JSON value will be a decimal string. Either numbers or strings are accepted.</td>
+</tr>
+<tr>
+<td align="left">float, double</td>
+<td align="left">number</td>
+<td align="left"><code>1.1, -10.0, 0, &quot;NaN&quot;,&quot;Infinity&quot;</code></td>
+<td align="left">JSON value will be a number or one of the special string values “NaN”, “Infinity”, and “-Infinity”. Either numbers or strings are accepted. Exponent notation is also accepted.</td>
+</tr>
+<tr>
+<td align="left">Any</td>
+<td align="left"><code>object</code></td>
+<td align="left"><code>&#123;&quot;@type&quot;: &quot;url&quot;, &quot;f&quot;: v, … &#125;</code></td>
+<td align="left">If the Any contains a value that has a special JSON mapping, it will be converted as follows: <code>&#123;&quot;@type&quot;: xxx, &quot;value&quot;: yyy&#125;</code>. Otherwise, the value will be converted into a JSON object, and the <code>&quot;@type&quot;</code> field will be inserted to indicate the actual data type.</td>
+</tr>
+<tr>
+<td align="left">Timestamp</td>
+<td align="left">string</td>
+<td align="left"><code>&quot;1972-01-01T10:00:20.021Z&quot;</code></td>
+<td align="left">Uses RFC 3339, where generated output will always be Z-normalized and uses 0, 3, 6 or 9 fractional digits. Offsets other than “Z” are also accepted.</td>
+</tr>
+<tr>
+<td align="left">Duration</td>
+<td align="left">string</td>
+<td align="left"><code>&quot;1.000340012s&quot;, &quot;1s&quot;</code></td>
+<td align="left">Generated output always contains 0, 3, 6, or 9 fractional digits, depending on required precision, followed by the suffix “s”. Accepted are any fractional digits (also none) as long as they fit into nano-seconds precision and the suffix “s” is required.</td>
+</tr>
+<tr>
+<td align="left">Struct</td>
+<td align="left"><code>object</code></td>
+<td align="left"><code>&#123; … &#125;</code></td>
+<td align="left">Any JSON object. See <code>struct.proto</code>.</td>
+</tr>
+<tr>
+<td align="left">Wrapper types</td>
+<td align="left">various types</td>
+<td align="left"><code>2, &quot;2&quot;, &quot;foo&quot;, true, &quot;true&quot;,null, 0, …</code></td>
+<td align="left">Wrappers use the same representation in JSON as the wrapped primitive type, except that <code>null</code> is allowed and preserved during data conversion and transfer.</td>
+</tr>
+<tr>
+<td align="left">FieldMask</td>
+<td align="left">string</td>
+<td align="left"><code>&quot;f.fooBar,h&quot;</code></td>
+<td align="left">See <code>field_mask.proto</code>.</td>
+</tr>
+<tr>
+<td align="left">ListValue</td>
+<td align="left">array</td>
+<td align="left"><code>[foo, bar, …]</code></td>
+<td align="left"></td>
+</tr>
+<tr>
+<td align="left">Value</td>
+<td align="left">value</td>
+<td align="left"></td>
+<td align="left">Any JSON value</td>
+</tr>
+<tr>
+<td align="left">NullValue</td>
+<td align="left">null</td>
+<td align="left"></td>
+<td align="left">JSON null</td>
+</tr>
+<tr>
+<td align="left">Empty</td>
+<td align="left">object</td>
+<td align="left">{}</td>
+<td align="left">An empty JSON object</td>
+</tr>
+</tbody></table>
+<h3 id="JSON-选项"><a href="#JSON-选项" class="headerlink" title="JSON 选项"></a>JSON 选项</h3><p><code>Proto3</code> JSON实现方可能提供下面的选项：</p>
+<ul>
+<li>忽略默认值的属性：<code>Proto3</code>默认会在输出时忽略默认值的属性。实现方可以提供该选项来覆盖这种行为，从而输出默认值属性。</li>
+<li>忽略未知的属性：<code>Proto3</code> JSON 解析器默认会拒绝未知的属性，但是可以通过提供该选项来忽略在解析时忽略未知属性。</li>
+<li>使用proto属性名替代首字母小写的驼峰命名法：默认情况下<code>proto3</code> JSON 打印器会转换属性名为小写的驼峰命名，并用户JSON字段名。实现者可以提供该选项使用proto属性名作为JSON的字段名。<code>Proto3</code> JSON 解析器需要同时转换小写的驼峰命名和属性名。</li>
+<li>将枚举值作为正数而不是字符串发送：枚举值的名称默认会用作JSON的输出。可以提供该选项使用数字值替代枚举值。</li>
+</ul>
+<h2 id="Options"><a href="#Options" class="headerlink" title="Options"></a>Options</h2><p>在<code>.proto</code>文件中的个别声明可以通过一些<code>options</code>进行注解，Options并不会改变声明的完整意义，但是会在当前的上下文中影响处理的方式。完成的被支持的选项定义在<code>google/protobuf/descriptor.proto</code>中。</p>
+<p>一些选项是文件级别的选项，这意味着他们会被声明在范围的顶级，而不是在任意的<code>message</code>,<code>enum</code>或<code>service</code>定义中。有些选项是消息级别的选项，意味值它们应该被定义在消息的定义中…</p>
+<p>这里有一些比较常用的选项：</p>
+<ul>
+<li><p><code>java_package</code>(文件选项)：你想在生成的java类中使用的包。如果没有生命该选项，默认使用<code>package</code>关键字作为类文件的包名。但是proto的<code>package</code>对java的包并不友好，因为proto的<code>package</code>并没有期望的域名开始。如果不是生成java代码，该选项不会有影响。</p>
+<figure class="highlight protobuf"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">option</span> java_package = <span class="string">&quot;com.example.foo&quot;</span>;</span><br></pre></td></tr></table></figure></li>
+<li><p><code>java_multiple_files</code>(文件选项)：使顶级消息，枚举和服务在程序包级别定义，而不是在意<code>.proto</code>文件命名的外部类内部定义。</p>
+<figure class="highlight protobuf"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">option</span> java_multiple_files = <span class="literal">true</span>;</span><br></pre></td></tr></table></figure></li>
+<li><p><code>java_outer_classname</code>(文件选项)：你想生成的最外层java类的名称（也是文件名称）。如果没有指定该选项，默认会改<code>.proto</code>文件名转换为驼峰格式。如果不是生成java代码，该选项不会有影响。</p>
+<figure class="highlight protobuf"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">option</span> java_outer_classname = <span class="string">&quot;Ponycopter&quot;</span>;</span><br></pre></td></tr></table></figure></li>
+<li><p><code>optimize_for</code>(文件选项)：可以设置为<code>SPEED</code>,<code>CODE_SIZE</code>,<code>LITE_RUNTIME</code>，这会在一下的几种方式影响C++和java的代码生成。</p>
+<ul>
+<li><code>SPEED</code>(默认)：protocol buffer编译器会在消息类型上生成序列化、解析以及其他公共操作的代码。这种代码时最优化的。</li>
+<li><code>CODE_SIZE</code>：编译器会生成最小化的类文件并依赖共享，基于反射的代码实现序列化、解析以及不同的其他操作。特点是尺寸小，但是执行速度较慢。生成的API和<code>SPEED</code>一致。适用于存在大量<code>proto</code>文件并对性能没有要求的场景。</li>
+<li><code>LITE_RUNTIME</code>：编译器生成的类依赖于<code>lite</code>运行时库(<code>libprotobuf-lite</code>替代<code>libprotobuf</code>)。lite运行时比全类库的更小，但是会省略某些特性，如描述和反射。生成的类仅实现<code>MessageLite</code>接口，也进提供了少量的<code>Message</code>接口的方法。运行速度和<code>SPEED</code>模式一致，适用于移动端。</li>
+</ul>
+<figure class="highlight protobuf"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">option</span> optimize_for = CODE_SIZE;</span><br></pre></td></tr></table></figure></li>
+<li><p><code>deprecated</code>(属性选项)：如果被设置为true，声明该属性已被废弃，并不应该在应该代码中使用。</p>
+<figure class="highlight protobuf"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">int32</span> old_field = <span class="number">6</span> [deprecated=<span class="literal">true</span>];</span><br></pre></td></tr></table></figure></li>
+</ul>
+<h2 id="生成类"><a href="#生成类" class="headerlink" title="生成类"></a>生成类</h2><p>生成Java Python C++ GO代码你需要定义一个<code>.proto</code>文件，然后在<code>.proto</code>文件上运行编译器<code>protoc</code>。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">protoc  --proto_path=IMPORT_PATH \</span><br><span class="line">        --cpp_out=DST_DIR \</span><br><span class="line">        --java_out=DST_DIR \</span><br><span class="line">        --python_out=DST_DIR \</span><br><span class="line">        --go_out=DST_DIR \</span><br><span class="line">        --ruby_out=DST_DIR \</span><br><span class="line">        --objc_out=DST_DIR \</span><br><span class="line">        --csharp_out=DST_DIR \</span><br><span class="line">        path/to/file.proto</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><p><code>IMPORT_PATH</code>指定解析<code>import</code>指令时在其中查找<code>.proto</code>文件的目录。如果忽略，当前目录被会使用。多个<code>import</code>指令可以通过指定多个<code>--proto_path</code>选项，它们会顺序搜索。<code>-I</code>是<code>--proto_path</code>的简写形式。</p>
+</li>
+<li><p>你可以指定一个或多个输出指令：</p>
+<ul>
+<li><code>--cpp_out</code>在<code>DST_DIR</code>生成C++代码。</li>
+<li><code>--java_out</code>在<code>DST_DIR</code>生成Java代码。</li>
+<li><code>--python_out</code>在<code>DST_DIR</code>生成Python代码。</li>
+<li><code>--cgo_out</code>在<code>DST_DIR</code>生成GO代码。</li>
+<li>…</li>
+</ul>
+<p>如果<code>DST_DIR</code>以<code>.zip</code>或<code>.jar</code>结尾，编译器会输出到一个单独的使用给定名称的ZIP归档文档格式。<code>.jar</code>输出也会给出一个符合Java JAR规范的<code>mainfest</code>文件。需要注意的是，如果输出的归档文件已存在，那么会被覆盖；编译器没有聪明到向归档文件中添加文件。</p>
+</li>
+<li><p>你可以提供一个或多个<code>.proto</code>文件作为输入。可以一次指定多个<code>.proto</code>文件。尽管这些文件时相对于当前目录命名的，但是每个文件都必须位于<code>IMPORT_PATH</code>中，以便编译器可以确定其规范名称。</p>
+</li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Protobuf/" rel="tag"><i class="fa fa-tag"></i> Protobuf</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/article/6b79f578.html" rel="prev" title="vue入门文档">
+                  <i class="fa fa-chevron-left"></i> vue入门文档
+                </a>
+            </div>
+            <div class="post-nav-item">
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+<script src="/js/comments.js"></script>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="angellist"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Deven</span>
+</div><script color="0,0,255" opacity="0.5" zIndex="-1" count="99" src="/lib/canvas-nest/canvas-nest.min.js"></script>
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js"></script>
+<script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+</body>
+</html>

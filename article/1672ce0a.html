@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.3/css/all.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css">
+
+<script class="next-config" data-name="main" type="application/json">{&quot;hostname&quot;:&quot;devenzhou.github.io&quot;,&quot;root&quot;:&quot;&#x2F;&quot;,&quot;images&quot;:&quot;&#x2F;images&quot;,&quot;scheme&quot;:&quot;Gemini&quot;,&quot;version&quot;:&quot;8.3.0&quot;,&quot;exturl&quot;:false,&quot;sidebar&quot;:{&quot;position&quot;:&quot;left&quot;,&quot;display&quot;:&quot;post&quot;,&quot;padding&quot;:18,&quot;offset&quot;:12},&quot;copycode&quot;:true,&quot;bookmark&quot;:{&quot;enable&quot;:false,&quot;color&quot;:&quot;#222&quot;,&quot;save&quot;:&quot;auto&quot;},&quot;fancybox&quot;:false,&quot;mediumzoom&quot;:false,&quot;lazyload&quot;:false,&quot;pangu&quot;:false,&quot;comments&quot;:{&quot;style&quot;:&quot;tabs&quot;,&quot;active&quot;:null,&quot;storage&quot;:true,&quot;lazyload&quot;:false,&quot;nav&quot;:null},&quot;motion&quot;:{&quot;enable&quot;:true,&quot;async&quot;:false,&quot;transition&quot;:{&quot;post_block&quot;:&quot;fadeIn&quot;,&quot;post_header&quot;:&quot;fadeInDown&quot;,&quot;post_body&quot;:&quot;fadeInDown&quot;,&quot;coll_header&quot;:&quot;fadeInLeft&quot;,&quot;sidebar&quot;:&quot;fadeInUp&quot;}},&quot;prism&quot;:false,&quot;i18n&quot;:{&quot;placeholder&quot;:&quot;搜索...&quot;,&quot;empty&quot;:&quot;没有找到任何搜索结果：${query}&quot;,&quot;hits_time&quot;:&quot;找到 ${hits} 个搜索结果（用时 ${time} 毫秒）&quot;,&quot;hits&quot;:&quot;找到 ${hits} 个搜索结果&quot;}}</script>
+<meta name="description" content="redis集群提供了一种分布式的redis高可用方案，用于替换老旧的主从加哨兵的模式。 配置redis集群需要如下几步：  下载redis镜像 配置网络 准备redis配置文件 启动redis 链接其中一个redis进行创建集群">
+<meta property="og:type" content="article">
+<meta property="og:title" content="docker搭建redis集群">
+<meta property="og:url" content="https://devenzhou.github.io/article/1672ce0a.html">
+<meta property="og:site_name" content="听风雨">
+<meta property="og:description" content="redis集群提供了一种分布式的redis高可用方案，用于替换老旧的主从加哨兵的模式。 配置redis集群需要如下几步：  下载redis镜像 配置网络 准备redis配置文件 启动redis 链接其中一个redis进行创建集群">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2021-04-24T06:22:22.000Z">
+<meta property="article:modified_time" content="2021-04-24T06:30:53.618Z">
+<meta property="article:author" content="Deven">
+<meta property="article:tag" content="Docker">
+<meta property="article:tag" content="Redis">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://devenzhou.github.io/article/1672ce0a.html">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{&quot;sidebar&quot;:&quot;&quot;,&quot;isHome&quot;:false,&quot;isPost&quot;:true,&quot;lang&quot;:&quot;zh-CN&quot;,&quot;comments&quot;:true,&quot;permalink&quot;:&quot;https:&#x2F;&#x2F;devenzhou.github.io&#x2F;article&#x2F;1672ce0a.html&quot;,&quot;path&quot;:&quot;article&#x2F;1672ce0a.html&quot;,&quot;title&quot;:&quot;docker搭建redis集群&quot;}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">&quot;&quot;</script>
+<title>docker搭建redis集群 | 听风雨</title><script src="/js/config.js"></script>
+  
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <h1 class="site-title">听风雨</h1>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu">
+        <li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li>
+        <li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签<span class="badge">22</span></a></li>
+        <li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">23</span></a></li>
+        <li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">53</span></a></li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%80-%E4%B8%8B%E8%BD%BDredis%E9%95%9C%E5%83%8F"><span class="nav-number">1.</span> <span class="nav-text">一. 下载redis镜像</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BA%8C-%E5%87%86%E5%A4%87%E7%BD%91%E7%BB%9C"><span class="nav-number">2.</span> <span class="nav-text">二. 准备网络</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%89-%E5%87%86%E5%A4%87%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6"><span class="nav-number">3.</span> <span class="nav-text">三. 准备配置文件</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-%E5%A2%9E%E5%8A%A0%E6%A8%A1%E6%9D%BF"><span class="nav-number">3.1.</span> <span class="nav-text">1 增加模板</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-%E6%9B%BF%E6%8D%A2%E6%A8%A1%E6%9D%BF%E5%8D%A0%E4%BD%8D%E7%AC%A6%E5%B9%B6%E5%88%9B%E5%BB%BA%E7%9B%AE%E5%BD%95"><span class="nav-number">3.2.</span> <span class="nav-text">2 替换模板占位符并创建目录</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9B%9B-%E5%90%AF%E5%8A%A8redis"><span class="nav-number">4.</span> <span class="nav-text">四. 启动redis</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BA%94-%E5%88%9B%E5%BB%BA%E9%9B%86%E7%BE%A4"><span class="nav-number">5.</span> <span class="nav-text">五. 创建集群</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%82%E8%80%83"><span class="nav-number">6.</span> <span class="nav-text">参考</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Deven"
+      src="/images/avatar.jpeg">
+  <p class="site-author-name" itemprop="name">Deven</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">53</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">23</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">22</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author site-overview-item animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/devenzhou" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;devenzhou" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+  </div>
+
+
+
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://devenzhou.github.io/article/1672ce0a.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpeg">
+      <meta itemprop="name" content="Deven">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="听风雨">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          docker搭建redis集群
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+      
+
+      <time title="创建时间：2021-04-24 14:22:22 / 修改时间：14:30:53" itemprop="dateCreated datePublished" datetime="2021-04-24T14:22:22+08:00">2021-04-24</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/" itemprop="url" rel="index"><span itemprop="name">数据库</span></a>
+        </span>
+          ，
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/Redis/" itemprop="url" rel="index"><span itemprop="name">Redis</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <p>redis集群提供了一种分布式的redis高可用方案，用于替换老旧的主从加哨兵的模式。</p>
+<p>配置redis集群需要如下几步：</p>
+<ol>
+<li>下载redis镜像</li>
+<li>配置网络</li>
+<li>准备redis配置文件</li>
+<li>启动redis</li>
+<li>链接其中一个redis进行创建集群</li>
+</ol>
+<span id="more"></span>
+
+<h2 id="一-下载redis镜像"><a href="#一-下载redis镜像" class="headerlink" title="一. 下载redis镜像"></a>一. 下载redis镜像</h2><p>在docker下，我们使用以下命令进行下载redis镜像。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker create redis</span><br></pre></td></tr></table></figure>
+
+<h2 id="二-准备网络"><a href="#二-准备网络" class="headerlink" title="二. 准备网络"></a>二. 准备网络</h2><p>我们需要redis在docker中使用同一个网络，类似于现实生活中的内网环境。那么我们需要创建一个路由网络，让所有的redis实例链接到该路由。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker network create redis-net</span><br></pre></td></tr></table></figure>
+
+<p>检查一下是否配置成功</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line">[root@localhost ~]# docker network inspect redis-net</span><br><span class="line"><span class="meta">#</span><span class="bash"><span class="comment"># 出现一下信息说明配置成功</span></span></span><br><span class="line">[</span><br><span class="line">    &#123;</span><br><span class="line">        &quot;Name&quot;: &quot;redis-net&quot;,</span><br><span class="line">        &quot;Id&quot;: &quot;b2647aeae8d843f957f40e8a7a92c17ca74f9bf32f732ce0fc17c585ac7e901d&quot;,</span><br><span class="line">        &quot;Created&quot;: &quot;2020-04-04T12:54:38.668457885+08:00&quot;,</span><br><span class="line">        &quot;Scope&quot;: &quot;local&quot;,</span><br><span class="line">        &quot;Driver&quot;: &quot;bridge&quot;,</span><br><span class="line">        &quot;EnableIPv6&quot;: false,</span><br><span class="line">        &quot;IPAM&quot;: &#123;</span><br><span class="line">            &quot;Driver&quot;: &quot;default&quot;,</span><br><span class="line">            &quot;Options&quot;: &#123;&#125;,</span><br><span class="line">            &quot;Config&quot;: [</span><br><span class="line">                &#123;</span><br><span class="line">                    &quot;Subnet&quot;: &quot;172.18.0.0/16&quot;,</span><br><span class="line">                    &quot;Gateway&quot;: &quot;172.18.0.1&quot;</span><br><span class="line">                &#125;</span><br><span class="line">            ]</span><br><span class="line">        &#125;,</span><br><span class="line">        &quot;Internal&quot;: false,</span><br><span class="line">        &quot;Attachable&quot;: false,</span><br><span class="line">        &quot;Ingress&quot;: false,</span><br><span class="line">        &quot;ConfigFrom&quot;: &#123;</span><br><span class="line">            &quot;Network&quot;: &quot;&quot;</span><br><span class="line">        &#125;,</span><br><span class="line">        &quot;ConfigOnly&quot;: false,</span><br><span class="line">        &quot;Containers&quot;: &#123;&#125;,</span><br><span class="line">        &quot;Options&quot;: &#123;&#125;,</span><br><span class="line">        &quot;Labels&quot;: &#123;&#125;</span><br><span class="line">    &#125;</span><br><span class="line">]</span><br></pre></td></tr></table></figure>
+
+<p>从上面的内从中我们可以找到网关IP为**”Gateway”:”172.18.0.1”**,这个地址我们后面会临时用到。</p>
+<h2 id="三-准备配置文件"><a href="#三-准备配置文件" class="headerlink" title="三. 准备配置文件"></a>三. 准备配置文件</h2><p>我们的目标是生成redis集群内生成6个实例，端口从7000-7005。</p>
+<p>下面我们使用shell加模板的方式生成这些文件。</p>
+<h3 id="1-增加模板"><a href="#1-增加模板" class="headerlink" title="1 增加模板"></a>1 增加模板</h3><p>我们先准备一份redis配置模板，先填入我们需要的信息。再次之前，创建一个目录<code>/root/redis-cluster</code>用于存放所有的配置。<strong>后续所有的操作都是该目录下</strong>。</p>
+<p>新建<code>redis.conf.tmpl</code>,填入一下内容,${PORT}为占位符，后面后替换为真实的端口号</p>
+<figure class="highlight vala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#节点端口</span></span><br><span class="line">port $&#123;PORT&#125;</span><br><span class="line"><span class="meta">#开启集群模式</span></span><br><span class="line"><span class="keyword">protected</span>-mode no</span><br><span class="line"><span class="meta">#cluster集群模式</span></span><br><span class="line">cluster-enabled yes</span><br><span class="line"><span class="meta">#集群配置名</span></span><br><span class="line">cluster-config-file nodes.conf</span><br><span class="line"><span class="meta">#超时时间</span></span><br><span class="line">cluster-node-timeout <span class="number">5000</span></span><br><span class="line"><span class="meta">#实际为各节点网卡分配ip  先用上网关ip代替</span></span><br><span class="line">cluster-announce-ip <span class="number">172.18</span><span class="number">.0</span>.X</span><br><span class="line"><span class="meta">#节点映射端口</span></span><br><span class="line">cluster-announce-port $&#123;PORT&#125;</span><br><span class="line"><span class="meta">#节点总线端口</span></span><br><span class="line">cluster-announce-bus-port <span class="number">1</span>$&#123;PORT&#125;</span><br><span class="line"><span class="meta">##持久化模式</span></span><br><span class="line">appendonly yes</span><br></pre></td></tr></table></figure>
+
+<h3 id="2-替换模板占位符并创建目录"><a href="#2-替换模板占位符并创建目录" class="headerlink" title="2 替换模板占位符并创建目录"></a>2 替换模板占位符并创建目录</h3><p>命令行执行如下代码会在当前目录下生成<strong>port/conf/redis.conf</strong>和<strong>port/data</strong></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">for port in `seq 7000 7005`; do \</span><br><span class="line">mkdir -p ./$&#123;port&#125;/conf \</span><br><span class="line">&amp;&amp; PORT=$&#123;port&#125; envsubst &lt; ./redis.conf.tmpl &gt; ./$&#123;port&#125;/conf/redis.conf \</span><br><span class="line">&amp;&amp; mkdir -p ./$&#123;port&#125;/data; \</span><br><span class="line">done</span><br></pre></td></tr></table></figure>
+
+<p>至此，准备配置文件的工作暂时告一段落。通过tree命令，我们可以看到当前文件夹内的项目结构如下：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line">[root@localhost redis-cluster]# tree</span><br><span class="line">.</span><br><span class="line">├── 7000</span><br><span class="line">│   ├── conf</span><br><span class="line">│   │   └── redis.conf</span><br><span class="line">│   └── data</span><br><span class="line">├── 7001</span><br><span class="line">│   ├── conf</span><br><span class="line">│   │   └── redis.conf</span><br><span class="line">│   └── data</span><br><span class="line">├── 7002</span><br><span class="line">│   ├── conf</span><br><span class="line">│   │   └── redis.conf</span><br><span class="line">│   └── data</span><br><span class="line">├── 7003</span><br><span class="line">│   ├── conf</span><br><span class="line">│   │   └── redis.conf</span><br><span class="line">│   └── data</span><br><span class="line">├── 7004</span><br><span class="line">│   ├── conf</span><br><span class="line">│   │   └── redis.conf</span><br><span class="line">│   └── data</span><br><span class="line">├── 7005</span><br><span class="line">│   ├── conf</span><br><span class="line">│   │   └── redis.conf</span><br><span class="line">│   └── data</span><br><span class="line">└── redis.conf.tmpl</span><br></pre></td></tr></table></figure>
+
+<h2 id="四-启动redis"><a href="#四-启动redis" class="headerlink" title="四. 启动redis"></a>四. 启动redis</h2><p>在启动redis之前，先介绍几个docker命令：</p>
+<ol>
+<li><code>docker run </code> 运行容器</li>
+<li><code>docker ps</code> 查看正在运行的容器状态</li>
+<li><code>docker logs</code> 查看指定容器的输出日志</li>
+<li><code>docker restart </code>重启容器</li>
+</ol>
+<p>下面我们通过一个简单的shell脚本启动7000-7005容器</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">for port in `seq 7000 7005`; do \</span><br><span class="line">docker run -d -it -p $&#123;port&#125;:$&#123;port&#125; -p 1$&#123;port&#125;:1$&#123;port&#125; \</span><br><span class="line">-v /root/redis-cluster/$&#123;port&#125;/conf/redis.conf:/usr/local/etc/redis/redis.conf \</span><br><span class="line">-v /root/redis-cluster/$&#123;port&#125;/data:/data \</span><br><span class="line">--restart always --name redis-$&#123;port&#125; --net redis-net \</span><br><span class="line">--sysctl net.core.somaxconn=1024 redis redis-server /usr/local/etc/redis/redis.conf; \</span><br><span class="line">done</span><br></pre></td></tr></table></figure>
+
+<p>执行完以上代码会看到类似于一下的输出，说明容器启动成功，否则请检查上面的步骤。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">96ae55d79e37ee18979a6c73fb265514baabd043dbf98074121b8be254e80a09</span><br><span class="line">204adee1c52171cedc63a73e38c2de490f7b123a6cade19d511ea8460578d491</span><br><span class="line">e5648b4fda0ab9923dd8e82a5e660eb58c4568f189444ecb9617813f0bb65f59</span><br><span class="line">4467d2fd96b7e853f22112de9e12a96ec539689912645577fc0b6e1d18eef17b</span><br><span class="line">8d83cbdbb5c10aee2ecb76b300956b79248a9ac9419de3f94b8e6f9177f2d028</span><br><span class="line">187a8d112f6d9fdcb99560f5ee56f853f7392ff9e9c9fd4f03db55aeb367677c</span><br></pre></td></tr></table></figure>
+
+<p>通过<code>docker ps</code>命令查看容器启动状态：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> docker ps</span></span><br><span class="line">CONTAINER ID        IMAGE               COMMAND                  CREATED             STATUS              PORTS                                                        NAMES</span><br><span class="line">187a8d112f6d        redis               &quot;docker-entrypoint.s…&quot;   19 minutes ago      Up 4 seconds        0.0.0.0:7005-&gt;7005/tcp, 6379/tcp, 0.0.0.0:17005-&gt;17005/tcp   redis-7005</span><br><span class="line">8d83cbdbb5c1        redis               &quot;docker-entrypoint.s…&quot;   19 minutes ago      Up About a minute   0.0.0.0:7004-&gt;7004/tcp, 6379/tcp, 0.0.0.0:17004-&gt;17004/tcp   redis-7004</span><br><span class="line">4467d2fd96b7        redis               &quot;docker-entrypoint.s…&quot;   19 minutes ago      Up 3 minutes        0.0.0.0:7003-&gt;7003/tcp, 6379/tcp, 0.0.0.0:17003-&gt;17003/tcp   redis-7003</span><br><span class="line">e5648b4fda0a        redis               &quot;docker-entrypoint.s…&quot;   19 minutes ago      Up 4 minutes        0.0.0.0:7002-&gt;7002/tcp, 6379/tcp, 0.0.0.0:17002-&gt;17002/tcp   redis-7002</span><br><span class="line">204adee1c521        redis               &quot;docker-entrypoint.s…&quot;   19 minutes ago      Up 5 minutes        0.0.0.0:7001-&gt;7001/tcp, 6379/tcp, 0.0.0.0:17001-&gt;17001/tcp   redis-7001</span><br><span class="line">96ae55d79e37        redis               &quot;docker-entrypoint.s…&quot;   19 minutes ago      Up 7 minutes        0.0.0.0:7000-&gt;7000/tcp, 6379/tcp, 0.0.0.0:17000-&gt;17000/tcp   redis-7000</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>如果发现<code>status</code>一栏对应的状态不是<code>Up</code>,请使用<code>docker logs redis-700x</code>查看输出。</p>
+</blockquote>
+<p>现在redis已正常启动，我们还差一个重要的配置没有加上，回顾一下redis.conf.tmpl文件中的ip是否存在一个x。</p>
+<p>现在我们需要手动将docker分配给对应redis的ip重新修改到<code>/root/redis-cluster/port/conf/redis.conf</code>文件中。查看docker分配的ip：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> docker network inspect redis-net</span></span><br><span class="line"></span><br><span class="line">[</span><br><span class="line">    &#123;</span><br><span class="line">        &quot;Name&quot;: &quot;redis-net&quot;,</span><br><span class="line">        &quot;Id&quot;: &quot;b2647aeae8d843f957f40e8a7a92c17ca74f9bf32f732ce0fc17c585ac7e901d&quot;,</span><br><span class="line">        &quot;Created&quot;: &quot;2020-04-04T12:54:38.668457885+08:00&quot;,</span><br><span class="line">        &quot;Scope&quot;: &quot;local&quot;,</span><br><span class="line">        &quot;Driver&quot;: &quot;bridge&quot;,</span><br><span class="line">        &quot;EnableIPv6&quot;: false,</span><br><span class="line">        &quot;IPAM&quot;: &#123;</span><br><span class="line">            &quot;Driver&quot;: &quot;default&quot;,</span><br><span class="line">            &quot;Options&quot;: &#123;&#125;,</span><br><span class="line">            &quot;Config&quot;: [</span><br><span class="line">                &#123;</span><br><span class="line">                    &quot;Subnet&quot;: &quot;172.18.0.0/16&quot;,</span><br><span class="line">                    &quot;Gateway&quot;: &quot;172.18.0.1&quot;</span><br><span class="line">                &#125;</span><br><span class="line">            ]</span><br><span class="line">        &#125;,</span><br><span class="line">        &quot;Internal&quot;: false,</span><br><span class="line">        &quot;Attachable&quot;: false,</span><br><span class="line">        &quot;Ingress&quot;: false,</span><br><span class="line">        &quot;ConfigFrom&quot;: &#123;</span><br><span class="line">            &quot;Network&quot;: &quot;&quot;</span><br><span class="line">        &#125;,</span><br><span class="line">        &quot;ConfigOnly&quot;: false,</span><br><span class="line">        &quot;Containers&quot;: &#123;</span><br><span class="line">            &quot;187a8d112f6d9fdcb99560f5ee56f853f7392ff9e9c9fd4f03db55aeb367677c&quot;: &#123;</span><br><span class="line">                &quot;Name&quot;: &quot;redis-7005&quot;,</span><br><span class="line">                &quot;EndpointID&quot;: &quot;4db73ed8ebf71adf6de2351583b01a3300158fa1747f860e18caf8ec84201d40&quot;,</span><br><span class="line">                &quot;MacAddress&quot;: &quot;02:42:ac:12:00:07&quot;,</span><br><span class="line">                &quot;IPv4Address&quot;: &quot;172.18.0.7/16&quot;,</span><br><span class="line">                &quot;IPv6Address&quot;: &quot;&quot;</span><br><span class="line">            &#125;,</span><br><span class="line">            &quot;204adee1c52171cedc63a73e38c2de490f7b123a6cade19d511ea8460578d491&quot;: &#123;</span><br><span class="line">                &quot;Name&quot;: &quot;redis-7001&quot;,</span><br><span class="line">                &quot;EndpointID&quot;: &quot;09f7add62db94945442f23286a54d3988089144807b160d0b1da40331e8b21f5&quot;,</span><br><span class="line">                &quot;MacAddress&quot;: &quot;02:42:ac:12:00:04&quot;,</span><br><span class="line">                &quot;IPv4Address&quot;: &quot;172.18.0.4/16&quot;,</span><br><span class="line">                &quot;IPv6Address&quot;: &quot;&quot;</span><br><span class="line">            &#125;,</span><br><span class="line">            &quot;4467d2fd96b7e853f22112de9e12a96ec539689912645577fc0b6e1d18eef17b&quot;: &#123;</span><br><span class="line">                &quot;Name&quot;: &quot;redis-7003&quot;,</span><br><span class="line">                &quot;EndpointID&quot;: &quot;5fda826ac2e8e4ffe7be2fcd0a11edcecca47204d7367ac8baf68d34f5064f75&quot;,</span><br><span class="line">                &quot;MacAddress&quot;: &quot;02:42:ac:12:00:05&quot;,</span><br><span class="line">                &quot;IPv4Address&quot;: &quot;172.18.0.5/16&quot;,</span><br><span class="line">                &quot;IPv6Address&quot;: &quot;&quot;</span><br><span class="line">            &#125;,</span><br><span class="line">            &quot;8d83cbdbb5c10aee2ecb76b300956b79248a9ac9419de3f94b8e6f9177f2d028&quot;: &#123;</span><br><span class="line">                &quot;Name&quot;: &quot;redis-7004&quot;,</span><br><span class="line">                &quot;EndpointID&quot;: &quot;0c7168b8e844391858e62cee99beda1a9e48f7d65ee329d5bbec2617cba51f29&quot;,</span><br><span class="line">                &quot;MacAddress&quot;: &quot;02:42:ac:12:00:06&quot;,</span><br><span class="line">                &quot;IPv4Address&quot;: &quot;172.18.0.6/16&quot;,</span><br><span class="line">                &quot;IPv6Address&quot;: &quot;&quot;</span><br><span class="line">            &#125;,</span><br><span class="line">            &quot;96ae55d79e37ee18979a6c73fb265514baabd043dbf98074121b8be254e80a09&quot;: &#123;</span><br><span class="line">                &quot;Name&quot;: &quot;redis-7000&quot;,</span><br><span class="line">                &quot;EndpointID&quot;: &quot;eb5e4f9d8a2fae7286ca8bbfd5203bc6220606d7981b01c3ef2bc84ff263ffb0&quot;,</span><br><span class="line">                &quot;MacAddress&quot;: &quot;02:42:ac:12:00:02&quot;,</span><br><span class="line">                &quot;IPv4Address&quot;: &quot;172.18.0.2/16&quot;,</span><br><span class="line">                &quot;IPv6Address&quot;: &quot;&quot;</span><br><span class="line">            &#125;,</span><br><span class="line">            &quot;e5648b4fda0ab9923dd8e82a5e660eb58c4568f189444ecb9617813f0bb65f59&quot;: &#123;</span><br><span class="line">                &quot;Name&quot;: &quot;redis-7002&quot;,</span><br><span class="line">                &quot;EndpointID&quot;: &quot;97618c2d467eba646205c4ca02890aea6f4e894b9c9eeba22ee2f9ca64fb71c5&quot;,</span><br><span class="line">                &quot;MacAddress&quot;: &quot;02:42:ac:12:00:03&quot;,</span><br><span class="line">                &quot;IPv4Address&quot;: &quot;172.18.0.3/16&quot;,</span><br><span class="line">                &quot;IPv6Address&quot;: &quot;&quot;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;,</span><br><span class="line">        &quot;Options&quot;: &#123;&#125;,</span><br><span class="line">        &quot;Labels&quot;: &#123;&#125;</span><br><span class="line">    &#125;</span><br><span class="line">]</span><br></pre></td></tr></table></figure>
+
+<p>从以上输出中找到Name对应的IPv4Address，分别修改对应的redis.conf文件。</p>
+<p>全部修改完成以后，执行如下命令重启redis容器：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">for port in `seq 7000 7005`; do \</span><br><span class="line">docker restart redis-$&#123;port&#125;; \</span><br><span class="line">done</span><br></pre></td></tr></table></figure>
+
+<h2 id="五-创建集群"><a href="#五-创建集群" class="headerlink" title="五. 创建集群"></a>五. 创建集群</h2><p>要将各个redis实例链接起来，我们需要链接其中一个redis实例，执行创建集群命令。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> 链接到redis-7000实例所在的容器</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> docker <span class="built_in">exec</span> -it redis-7000 bash</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> 创建集群</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> redis-cli --cluster create  172.18.0.7:7005 172.18.0.4:7001 \ </span></span><br><span class="line"><span class="meta">&gt;</span><span class="bash"> 172.18.0.4:7001 \</span></span><br><span class="line"><span class="bash">&gt; 172.18.0.5:7003 \</span></span><br><span class="line"><span class="bash">&gt; 172.18.0.6:7004 \</span></span><br><span class="line"><span class="bash">&gt; 172.18.0.2:7000 \</span></span><br><span class="line"><span class="bash">&gt; 172.18.0.3:7002 \</span></span><br><span class="line"><span class="bash">&gt; --cluster-replicas 1</span> </span><br></pre></td></tr></table></figure>
+
+<p>创建集群命令会提示用户是否已看到完整信息，输入<code>yes</code>即可。</p>
+<p>现在链接redis查看集群情况：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> redis-cli -c -p 7000</span></span><br><span class="line">127.0.0.1:7000&gt; info replication</span><br><span class="line"><span class="meta">#</span><span class="bash"> Replication</span></span><br><span class="line">role:slave</span><br><span class="line">master_host:172.18.0.7</span><br><span class="line">master_port:7005</span><br><span class="line">master_link_status:up</span><br><span class="line">master_last_io_seconds_ago:9</span><br><span class="line">master_sync_in_progress:0</span><br><span class="line">slave_repl_offset:84</span><br><span class="line">slave_priority:100</span><br><span class="line">slave_read_only:1</span><br><span class="line">connected_slaves:0</span><br><span class="line">master_replid:8c42e4110b55a6054fa68e134350e0dca43d9654</span><br><span class="line">master_replid2:0000000000000000000000000000000000000000</span><br><span class="line">master_repl_offset:84</span><br><span class="line">second_repl_offset:-1</span><br><span class="line">repl_backlog_active:1</span><br><span class="line">repl_backlog_size:1048576</span><br><span class="line">repl_backlog_first_byte_offset:15</span><br><span class="line">repl_backlog_histlen:70</span><br></pre></td></tr></table></figure>
+
+<p>到此，redis集群搭建完成。</p>
+<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><p><a target="_blank" rel="noopener" href="https://juejin.im/post/5c9ca08f5188252d5a14a31b">Docker Redis 5.0 集群（cluster）搭建</a></p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Docker/" rel="tag"><i class="fa fa-tag"></i> Docker</a>
+              <a href="/tags/Redis/" rel="tag"><i class="fa fa-tag"></i> Redis</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/article/7dc91154.html" rel="prev" title="进制转换">
+                  <i class="fa fa-chevron-left"></i> 进制转换
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/article/e272e39a.html" rel="next" title="SQL语法">
+                  SQL语法 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+<script src="/js/comments.js"></script>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="angellist"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Deven</span>
+</div><script color="0,0,255" opacity="0.5" zIndex="-1" count="99" src="/lib/canvas-nest/canvas-nest.min.js"></script>
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js"></script>
+<script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+</body>
+</html>
