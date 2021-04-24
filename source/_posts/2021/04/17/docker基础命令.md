@@ -2,9 +2,9 @@
 title: docker基础命令
 categories:
   - 云原生
-  - docker
+  - Docker
 tags:
-  - docker
+  - Docker
 abbrlink: eeb7b753
 date: 2021-04-17 14:44:25
 ---

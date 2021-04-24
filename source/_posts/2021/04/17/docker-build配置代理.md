@@ -2,9 +2,9 @@
 title: docker build配置代理
 categories:
   - 云原生
-  - docker
+  - Docker
 tags:
-  - docker
+  - Docker
 abbrlink: '869e1239'
 date: 2021-04-17 15:29:45
 ---

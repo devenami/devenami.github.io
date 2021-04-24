@@ -2,9 +2,9 @@
 title: docker镜像下载加速
 categories:
   - 云原生
-  - docker
+  - Docker
 tags:
-  - docker
+  - Docker
 abbrlink: af510216
 date: 2021-04-17 15:26:14
 ---

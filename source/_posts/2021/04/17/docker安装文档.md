@@ -2,9 +2,9 @@
 title: docker安装文档
 categories:
   - 云原生
-  - docker
+  - Docker
 tags:
-  - docker
+  - Docker
 abbrlink: cddcf0d2
 date: 2021-04-17 14:41:06
 ---
